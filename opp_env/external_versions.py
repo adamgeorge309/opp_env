@@ -263,5 +263,132 @@ def get_project_descriptions():
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"]
         },
+
+        {
+            # WIP
+            "name": "ieee802154standalone", "version": "master",
+            # "nix_packages": ["curl", "tcl"],
+            "required_projects": {"omnetpp": ["4.6"], "inet": ["2.4.0"]},
+            "git_url": "https://github.com/michaelkirsche/IEEE802154INET-Standalone.git",
+            # "setenv_commands": ["export INET_PROJ=$INET_ROOT",
+            #                     "export TCL_LIBRARY=$TCLLIBPATH"],
+            "patch_commands": [
+                "sed -i 's|INETDefs.h|base/INETDefs.h|g' src/*/*.h",
+                # "find . -type f -name '*.h' -exec sed -i 's|#include INETDefs.h|#include base/INETDefs.h|g'",
+                # "for i in xa*; do sed -i 's|#include INETDefs.h|#include base/INETDefs.h|' $i;done"
+                "sed -i 's|opp_makemake -f --deep|opp_makemake -f --deep -I. -I${INET_ROOT}/src -o ieee802154 -L${INET_ROOT}/src -lINET|' Makefile",
+            ],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"]
+        },
         
+        {
+            # compile error
+            "name": "os3", "version": "master",
+            "nix_packages": ["curl", "tcl"],
+            "required_projects": {"omnetpp": ["4.2"], "inet": ["2.2.0"]},
+            "download_url": "https://github.com/inet-framework/os3/archive/refs/tags/v1.0.tar.gz",
+            "setenv_commands": ["export INET_PROJ=$INET_ROOT",
+                                "export TCL_LIBRARY=$TCLLIBPATH"],
+            "patch_commands": [
+                "sed -i -E 's|-KINET_PROJ=[^ ]+|-KINET_PROJ=$(INET_ROOT)|' Makefile",
+                "sed -i 's|$DIR/../../inet|$INET_ROOT|' src/run_cni-os3",
+            ],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"]
+        },
+     
+        {
+            "name": "artery", "version": "oppsummit2015",
+            "required_projects": {"omnetpp": ["5.5"], "vanetza": ["master"], "veins": ["5.2"]},
+            "nix_packages": ["cmake", "boost"],
+            "download_url": "https://github.com/riebl/artery/archive/refs/tags/opp-summit2015.tar.gz",
+            "setenv_commands": [
+                "export ARTERY_PATH=$ARTERY_ROOT",
+                "export Vanetza_DIR=$VANETZA_ROOT/build",
+                "export Veins_DIR=$VEINS_ROOT"
+                # "echo 'Hint: use the run_inet command to run the simulations in the examples folder.'",
+            ],
+            "build_commands": ["mkdir -p build && cd build && cmake .. && cmake --build ."],
+            "clean_commands": ["make clean"]
+        },
+
+        {
+            "name": "artery", "version": "master",
+            "required_projects": {"omnetpp": ["5.5"], "vanetza": ["master"], "veins": ["5.2"], "inet": ["3.7.1"]},
+            "nix_packages": ["cmake", "boost"],
+            "git_url": "https://github.com/riebl/artery.git",
+            "patch_commands": [
+                "sed -i 's|check_git_submodule|#check_git_submodule|' CMakeLists.txt",
+                "sed -i 's|add_subdirectory|#add_subdirectory|' CMakeLists.txt",
+                "sed -i 's|add_opp_target|#add_opp_target|' CMakeLists.txt",
+            ],
+            "setenv_commands": [
+                "export ARTERY_PATH=$ARTERY_ROOT",
+                "export Vanetza_DIR=$VANETZA_ROOT/build",
+                "export Veins_DIR=$VEINS_ROOT",
+                # "export SimuLTE_DIR=$SIMULTE_ROOT"
+                "export INET_DIR=$INET_ROOT",
+                # "echo 'Hint: use the run_inet command to run the simulations in the examples folder.'",
+                "cd extern && rm -r inet && ln -sf -T $INET_ROOT inet",
+                "rm -r veins && ln -sf -T $VEINS_ROOT veins",
+                "rm -r vanetza && ln -sf -T $VANETZA_ROOT vanetza",
+                # "cd extern && rm -r inet && ln -sf -T $INET_ROOT inet",
+                # "ln -sf $VANETZA_ROOT extern",
+                # "ln -sf $VEINS_ROOT extern",
+                # "ln -s $INET_ROOT" extern/inet"
+                # "ln -s $INET_ROOT" extern/inet"
+            ],
+            "build_commands": ["mkdir -p build && cd build && cmake .. && make"],
+            "clean_commands": ["make clean"]
+        },
+
+        {
+            # build errors in leach project
+            "name": "leach", "version": "master",
+            "required_projects": {"omnetpp": ["5.6.2"], "inet": ["4.2.5"]},
+            "git_url": "https://github.com/Agr-IoT/LEACH.git",
+            "setenv_commands": ["export INET4_PROJ=$INET_ROOT"],
+            "build_commands": ["opp_makemake -f --deep -O out -KINET4_PROJ=$INET4_PROJ -DINET_IMPORT -I. -I$INET4_PROJ/src -L$INET4_PROJ/src -lINET$D && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"]
+        },
+
+        {
+            # WIP; mobility can't load movements file
+            # ./opslite-master ../simulations/omnetpp.ini -n .:../simulations:$INET_ROOT/src
+            "name": "opslite", "version": "master",
+            "required_projects": {"omnetpp": ["5.4.1"], "inet": ["4.0.0"]},
+            "git_url": "https://github.com/ComNets-Bremen/OPSLite.git",
+            "setenv_commands": ["export INET_PROJ=$INET_ROOT"],
+            # "patch_commands": [
+            #     "sed -i -E 's|ieee8021as|IEEE8021AS|' IEEE8021AS/simulations/run",
+            #     "sed -i -E 's|-n.*|-n $INET_ROOT/src:.:../src $*|' IEEE8021AS/simulations/run",
+            #     "chmod +x IEEE8021AS/simulations/run",
+            # ],
+            "build_commands": ["cd src && opp_makemake -f --deep -KINET_PROJ=$INET_PROJ -DINET_IMPORT -I$INET_PROJ/src -L$INET_PROJ/src -lINET && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"]
+        },
+
+        {
+            # need SWIM
+            "name": "ops", "version": "master",
+            "required_projects": {"omnetpp": ["5.6"], "inet": ["4.1.1"], "keetchlib": ["master"]},
+            "git_url": "https://github.com/ComNets-Bremen/OPS.git",
+            "git_branch": "master",
+            # "setenv_commands": ["export KEETCHI_API_PATH=$KEETCHLIB_ROOT", 
+            #                     "export INET_PATH=$INET_ROOT"],
+            "build_commands": ["opp_makemake -f && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"]
+        },
+
+        {
+            "name": "oversim", "version": "20190424",
+            "required_projects": {"inet": ["3.6.*"], "omnetpp": ["5.4.*"]},
+            "download_url": "https://github.com/inet-framework/oversim/archive/refs/tags/v20190424.tar.gz",
+            "patch_commands": ["sed -i -E 's|INETDIR = .*|INETDIR = $(INET_ROOT)|' Makefile"],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && sed -i -E \"s|ned-path = .*|ned-path = $INET_ROOT/src;../src|\" simulations/default.ini"],
+            "clean_commands": ["make clean"],
+            "description": "DONE"
+        },
+
     ]
