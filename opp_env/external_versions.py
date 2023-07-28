@@ -553,15 +553,93 @@ def get_project_descriptions():
         },
 
         {
-            # WIP - builds; can't run example simulations
+            # DONE
             "name": "cell", "version": "master",
             "required_projects": {"omnetpp": ["4.0.x"]},
             "git_url": "https://github.com/dhuertas/cell-signaling.git",
-            "patch_commands": [
-                # "sed -i 's|||g' ",
-            ],
-            "build_commands": ["cd src && opp_makemake -f --deep -O out && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
+            # run example simulation from src folder with:
+            # ./cell -n .. ../networks/demo.ini
+        },
+
+        {
+            # WIP - doesnt build
+            # include/ARAMacros.h:8:10: fatal error: 'memory' file not found
+            # #include <memory>
+            #          ^~~~~~~~
+            "name": "libara", "version": "1.2",
+            "required_projects": {"omnetpp": ["5.7.x"], "inetmanet": ["3.x"]},
+            "download_url": "https://github.com/des-testbed/libara/archive/refs/tags/v1.2.tar.gz",
+            "setenv_commands": ["export INETMANET_FOLDER=$INETMANET_ROOT"],
+            "patch_commands": [
+                "sed -i 's|INETMANET_FOLDER = inetmanet|INETMANET_FOLDER = $(INETMANET_ROOT)|g' Makefile",
+            ],
+            # "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+            # run example simulation from src folder with:
+            # ./cell -n .. ../networks/demo.ini
+        },
+
+        {
+            # DONE
+            "name": "inetmanet", "version": "3.x",
+            "required_projects": {"omnetpp": ["5.7.x"]},
+            "git_url": "https://github.com/aarizaq/inetmanet-3.x.git",
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # WIP
+            "name": "inetmanet", "version": "4.x",
+            "required_projects": {"omnetpp": ["5.7.x"]},
+            "git_url": "https://github.com/aarizaq/inetmanet-4.x.git",
+            # "setenv_commands": ["export inet_root=$INETMANET_ROOT"],
+            "build_commands": [". setenv -f && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # DONE
+            "name": "inetmanet", "version": "4.0.0",
+            "required_projects": {"omnetpp": ["5.4.x"]},
+            "download_url": "https://github.com/aarizaq/inetmanet-4.x/archive/refs/tags/v4.0.0.tar.gz",
+            "build_commands": [". setenv -f && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+            # to run simulations, issue '. setenv' first
+        },
+
+        {
+            # WIP
+            "name": "epon", "version": "0.8b",
+            "required_projects": {"omnetpp": ["5.7.x"], "inetmanet": ["3.x"]},
+            "download_url": "https://sourceforge.net/projects/omneteponmodule/files/latest/download",
+            # "setenv_commands": ["export INETMANET_PROJ=$INETMANET_ROOT"],
+            "patch_commands": [
+                "sed -i 's|INETMANET_PROJ=/media/data/Linux/omnet/inetmanet-inetmanet-00f64c2|INETMANET_PROJ=$(INETMANET_ROOT)|g' Makefile src/Makefile",
+            ],
+            # "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            # "build_commands": ["opp_makemake -f --deep --nolink -O out -d src -X. -I$INETMANET_ROOT/src/inet -L$INETMANET_ROOT/out/$CONFIGNAME/src -L./out/$CONFIGNAME/src -linet -KINETMANET_PROJ=$INETMANET_ROOT && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "build_commands": ["opp_makemake -f --deep --make-so -I$INETMANET_ROOT/src/inet/util/headerserializers/headers -I$INETMANET_ROOT/src/inet/networklayer/arp -I$INETMANET_ROOT/src/inet/transport/sctp -I$INETMANET_ROOT/src/inet/world -I$INETMANET_ROOT/src/inet/transport/contract -I$INETMANET_ROOT/src/inet/linklayer/mfcore -I$INETMANET_ROOT/src/inet/linklayer/ethernet -I$INETMANET_ROOT/src/inet/util -I$INETMANET_ROOT/src/inet/networklayer/ted -I$INETMANET_ROOT/src/inet/linklayer/ieee80211/mac -I$INETMANET_ROOT/src/inet/networklayer/common -I$INETMANET_ROOT/src/inet/networklayer/ipv6 -I$INETMANET_ROOT/src/inet/applications/pingapp -I$INETMANET_ROOT/src/inet/networklayer/ldp -I$INETMANET_ROOT/src/inet/transport/tcp -I$INETMANET_ROOT/src/inet/util/headerserializers -I$INETMANET_ROOT/src/inet/networklayer/rsvp_te -I$INETMANET_ROOT/src/inet/transport/udp -I$INETMANET_ROOT/src/inet/networklayer/ipv4 -I$INETMANET_ROOT/src/inet/networklayer/icmpv6 -I$INETMANET_ROOT/src/inet/base -I$INETMANET_ROOT/src/inet/networklayer/contract -I$INETMANET_ROOT/src/inet/networklayer/manetrouting/base -I$INETMANET_ROOT/src/inet/networklayer/mpls -I$INETMANET_ROOT/src/inet/linklayer/contract -I$INETMANET_ROOT/src/inet/networklayer/autorouting -L/media/data/Linux/omnet/inetmanet-inetmanet-00f64c2/out/$CONFIGNAME/src -linet -KINETMANET_PROJ=$INETMANET_ROOT"],
+            "clean_commands": ["make clean"],
+            # run example simulation from src folder with:
+            # ./cell -n .. ../networks/demo.ini
+        },
+
+        {
+            # WIP
+            "name": "inet_hnrl", "version": "master",
+            "required_projects": {"omnetpp": ["5.7.x"]},
+            "git_url": "https://github.com/kyeongsoo/inet-hnrl.git",
+            # "setenv_commands": ["export INETMANET_PROJ=$INETMANET_ROOT"],
+            # "patch_commands": [
+            #     "sed -i 's|INETMANET_PROJ=/media/data/Linux/omnet/inetmanet-inetmanet-00f64c2|INETMANET_PROJ=$(INETMANET_ROOT)|g' Makefile src/Makefile",
+            # ],
+            # "build_commands": ["opp_makemake -f --deep --make-so -I$INETMANET_ROOT/src/inet/util/headerserializers/headers -I$INETMANET_ROOT/src/inet/networklayer/arp -I$INETMANET_ROOT/src/inet/transport/sctp -I$INETMANET_ROOT/src/inet/world -I$INETMANET_ROOT/src/inet/transport/contract -I$INETMANET_ROOT/src/inet/linklayer/mfcore -I$INETMANET_ROOT/src/inet/linklayer/ethernet -I$INETMANET_ROOT/src/inet/util -I$INETMANET_ROOT/src/inet/networklayer/ted -I$INETMANET_ROOT/src/inet/linklayer/ieee80211/mac -I$INETMANET_ROOT/src/inet/networklayer/common -I$INETMANET_ROOT/src/inet/networklayer/ipv6 -I$INETMANET_ROOT/src/inet/applications/pingapp -I$INETMANET_ROOT/src/inet/networklayer/ldp -I$INETMANET_ROOT/src/inet/transport/tcp -I$INETMANET_ROOT/src/inet/util/headerserializers -I$INETMANET_ROOT/src/inet/networklayer/rsvp_te -I$INETMANET_ROOT/src/inet/transport/udp -I$INETMANET_ROOT/src/inet/networklayer/ipv4 -I$INETMANET_ROOT/src/inet/networklayer/icmpv6 -I$INETMANET_ROOT/src/inet/base -I$INETMANET_ROOT/src/inet/networklayer/contract -I$INETMANET_ROOT/src/inet/networklayer/manetrouting/base -I$INETMANET_ROOT/src/inet/networklayer/mpls -I$INETMANET_ROOT/src/inet/linklayer/contract -I$INETMANET_ROOT/src/inet/networklayer/autorouting -L/media/data/Linux/omnet/inetmanet-inetmanet-00f64c2/out/$CONFIGNAME/src -linet -KINETMANET_PROJ=$INETMANET_ROOT"],
+            "clean_commands": ["make clean"],
+            # run example simulation from src folder with:
+            # ./cell -n .. ../networks/demo.ini
         },
 
     ]
