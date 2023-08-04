@@ -502,6 +502,9 @@ def get_project_descriptions():
             "name": "obs", "version": "master",
             "required_projects": {"omnetpp": ["4.2.0"], "inet": ["2.2.0"]},
             "git_url": "https://github.com/mikelizal/OBSmodules.git",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/OBS.html",
+            },
             "patch_commands": [
                 # "sed -i 's|INETDefs.h|inet/common/INETDefs.h|g' src/*/*/*.h",
             ],
@@ -525,7 +528,7 @@ def get_project_descriptions():
 
         {
             # WORKS - need to start with -i images, otherwise some node images are missing; 
-            # uses git submodules for external libraries (should we use nix packages?)
+            # uses git submodules for external libraries (should we use nix packages?) we shouldn't
             "name": "quisp", "version": "master",
             # "nix_packages": ['eigen'],
             "required_projects": {"omnetpp": ["6.0.0"]},
@@ -554,6 +557,7 @@ def get_project_descriptions():
         {
             # DONE
             "name": "cell", "version": "master",
+            "description": "biological cell simulation",
             "required_projects": {"omnetpp": ["4.0.x"]},
             "git_url": "https://github.com/dhuertas/cell-signaling.git",
             "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
@@ -590,23 +594,13 @@ def get_project_descriptions():
         },
 
         {
-            # WIP - but version 4.0.0 works
-            "name": "inetmanet", "version": "4.x",
-            "required_projects": {"omnetpp": ["5.7.x"]},
-            "git_url": "https://github.com/aarizaq/inetmanet-4.x.git",
-            # "setenv_commands": ["export inet_root=$INETMANET_ROOT"],
-            "build_commands": [". setenv -f && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
-        },
-
-        {
             # DONE
             "name": "inetmanet", "version": "4.0.0",
             "required_projects": {"omnetpp": ["5.4.x"]},
             "download_url": "https://github.com/aarizaq/inetmanet-4.x/archive/refs/tags/v4.0.0.tar.gz",
-            "build_commands": [". setenv -f && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "setenv_commands": [". setenv -f"],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
-            # to run simulations, issue '. setenv' first
         },
 
         {
@@ -627,15 +621,16 @@ def get_project_descriptions():
         {
             # WIP
             # cant build
-            # need libsqlite3 location
             "name": "inet_hnrl", "version": "master",
             "nix_packages": ["sqlite"],
             "required_projects": {"omnetpp": ["4.2.0"]},
             "git_url": "https://github.com/kyeongsoo/inet-hnrl.git",
-            # "setenv_commands": ["export INETMANET_PROJ=$INETMANET_ROOT"],
-            # "patch_commands": [
-            #     "sed -i 's|INETMANET_PROJ=/media/data/Linux/omnet/inetmanet-inetmanet-00f64c2|INETMANET_PROJ=$(INETMANET_ROOT)|g' Makefile src/Makefile",
-            # ],
+            "setenv_commands": ["export SQLITE_LIB=${pkgs.sqlite}/lib"],
+            "patch_commands": [
+                "sed -i 's|INETMANET_PROJ=/media/data/Linux/omnet/inetmanet-inetmanet-00f64c2|INETMANET_PROJ=$(INETMANET_ROOT)|g' Makefile",
+                "sed -i 's|-L/usr/local/lib|-L$(SQLITE_LIB)|g' Makefile",
+                "sed -i 's|-I/usr/local/include||g' Makefile",
+            ],
             "build_commands": ["make makefiles && make all -j$NIX_BUILD_CORES MODE=$BUILD_MODE CFLAGS='-std=c++11 -Wall -Wextra'"],
             "clean_commands": ["make clean"],
         },
@@ -770,19 +765,14 @@ def get_project_descriptions():
                 "sed -i 's|from elementtree|from xml.etree|' */*/*/*.py",
             ],
             "build_commands": ["./configure --with-veins=$VEINS_ROOT && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && . setenv"],
-            # "setenv_commands": ["echo 'Hint: run example simulations from their folder. For example, in examples/TwoSubnets folder: ./out/gcc-debug/TwoSubnets omnetpp.ini"]
             "clean_commands": ["make clean"],
         },
 
         {
-            # WIP - builds
+            # WIP - builds; cant find ned types
             "name": "processbus", "version": "master",
-            # "nix_packages": ["python2", "mesa", "libxml2"],
             "required_projects": {"omnetpp": ["4.6.x"]},
             "git_url": "https://github.com/hectordelahoz/ProcessBusIec61850.git",
-            # "setenv_commands": [
-            #                     "export SUMO_HOME=${pkgs.sumo}/share/sumo && echo 'sumo home: ' && echo $SUMO_HOME",
-            #                     ],
             "patch_commands": [
                             "sed -i.bak 's/if (vector_cost<=0)/if (vector_cost == NULL)/' iec61850InetV2.6/inet/src/networklayer/manetrouting/dsr/dsr-uu/path-cache.cc",
                             # "sed -i.bak 's/if (vector_cost<=nullptr)/if (vector_cost == nullptr)/' src/inet/routing/extras/dsr/dsr-uu/path-cache.cc" if not is_modernized and inet_version >= "3.0" and inet_version < "3.1" else None,
@@ -791,8 +781,109 @@ def get_project_descriptions():
                 "sed -i 's|-n .:../src|-n .:../src:../../inet/src|' iec61850InetV2.6/TestInet/simulations/run",
             ],
             "build_commands": ["cd iec61850InetV2.6/inet && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && chmod +x src/run_inet && cd ../TestInet && make makefiles && cd src && make"],
-            # "setenv_commands": ["echo 'Hint: run example simulations from their folder. For example, in examples/TwoSubnets folder: ./out/gcc-debug/TwoSubnets omnetpp.ini"]
             "clean_commands": ["make clean"],
         },
 
+        {
+            # WIP; this should be its own project; should this be linked to inet?
+            "name": "rimfading", "version": "master",
+            "required_projects": {"omnetpp": ["5.1.x"], "inet": ["3.3.0"]},
+            "git_url": "https://github.com/ComNets-Bremen/RIMFading.git",
+            # "patch_commands": [
+            #                 "sed -i.bak 's/if (vector_cost<=0)/if (vector_cost == NULL)/' iec61850InetV2.6/inet/src/networklayer/manetrouting/dsr/dsr-uu/path-cache.cc",
+            #                 # "sed -i.bak 's/if (vector_cost<=nullptr)/if (vector_cost == nullptr)/' src/inet/routing/extras/dsr/dsr-uu/path-cache.cc" if not is_modernized and inet_version >= "3.0" and inet_version < "3.1" else None,
+            #     "sed -i 's|testinet|TestInet|' iec61850InetV2.6/TestInet/simulations/run",
+            #     "chmod +x iec61850InetV2.6/TestInet/simulations/run",
+            #     "sed -i 's|-n .:../src|-n .:../src:../../inet/src|' iec61850InetV2.6/TestInet/simulations/run",
+            # ],
+            # "build_commands": ["cd iec61850InetV2.6/inet && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && chmod +x src/run_inet && cd ../TestInet && make makefiles && cd src && make"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # WIP - needs older INET (20100323)
+            "name": "rease", "version": "master",
+            "required_projects": {"omnetpp": ["4.1.0"], "inet": ["20100323"]},
+            "git_url": "https://github.com/ToGaKIT/ReaSE.git",
+            "patch_commands": [
+            #                 "sed -i.bak 's/if (vector_cost<=0)/if (vector_cost == NULL)/' iec61850InetV2.6/inet/src/networklayer/manetrouting/dsr/dsr-uu/path-cache.cc",
+            #                 # "sed -i.bak 's/if (vector_cost<=nullptr)/if (vector_cost == nullptr)/' src/inet/routing/extras/dsr/dsr-uu/path-cache.cc" if not is_modernized and inet_version >= "3.0" and inet_version < "3.1" else None,
+                "sed -i 's|INETDIR = ../../INET|INETDIR = $(INET_ROOT)|' ReaSE/Makefile",
+                "sed -i 's|lINET|linet|' ReaSE/Makefile",
+            #     "chmod +x iec61850InetV2.6/TestInet/simulations/run",
+            #     "sed -i 's|-n .:../src|-n .:../src:../../inet/src|' iec61850InetV2.6/TestInet/simulations/run",
+            ],
+            "build_commands": ["cd ReaSE && make -j16"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # WIP - doesnt build yet; depends on several libraries
+            "name": "seapp", "version": "master",
+            "nix_packages": ["python2", "glibmm", "libxml2", "libsigcxx", "libxmlxx", "glib"],
+            "required_projects": {"omnetpp": ["4.6.x"]},
+            "git_url": "https://github.com/seapp/seapp_stable.git",
+            "setenv_commands": [
+                                "export GLIBMM_ROOT=${pkgs.glibmm} && echo 'GLIBMM_ROOT: ' && echo $GLIBMM_ROOT",
+                                "export GLIBMM_DEV_ROOT=${pkgs.glibmm.dev} && echo 'GLIBMM_DEV_ROOT: ' && echo $GLIBMM_DEV_ROOT",
+                                "export LIBXMLXX_ROOT=${pkgs.libxmlxx} && echo 'LIBXMLXX_ROOT: ' && echo $LIBXMLXX_ROOT",
+                                "export LIBSIGCXX_ROOT=${pkgs.libsigcxx} && echo 'LIBSIGCXX_ROOT: ' && echo $LIBSIGCXX_ROOT",
+                                "export GLIB_ROOT=${pkgs.glib} && echo 'GLIB_ROOT: ' && echo $GLIB_ROOT",
+                                ],
+            "patch_commands": [
+            #     "sed -i 's|from elementtree|from xml.etree|' */*/*/*.py",
+                "sed -i 's|-I/usr/include/libxml2|-I${pkgs.libxml2.dev}/include/libxml2|g' Makefile",
+                "sed -i 's|-I/usr/include/libxml++-2.6|-I${pkgs.libxmlxx}/include/libxml++-2.6|g' Makefile",
+                "sed -i 's|-I/usr/include/glibmm-2.4|-I${pkgs.glibmm}/lib/glibmm-2.4/include -I${pkgs.glibmm}/lib/glibmm-2.4|g' Makefile",
+                "sed -i 's|-I/usr/include/sigc++-2.0|-I${pkgs.libsigcxx}/include/sigc++-2.0|g' Makefile",
+                "sed -i 's|-I/usr/include/glib-2.0|-I${pkgs.glib}/include/glib-2.0 -I${pkgs.glib}/include/glib-2.0/include|g' Makefile",
+                "sed -i 's|-I/usr/lib/x86_64-linux-gnu/libxml++-2.6/include|-L$(LIBXMLXX_ROOT)/lib|g' Makefile",
+                "sed -i 's|-I/usr/lib/x86_64-linux-gnu/glibmm-2.4/include |-L$(GLIBMM_ROOT)/lib|g' Makefile",
+                "sed -i 's|-I/usr/lib/x86_64-linux-gnu/sigc++-2.0/include |-L$(LIBSIGCXX_ROOT)/lib|g' Makefile",
+                "sed -i 's|-I/usr/lib/x86_64-linux-gnu/glib-2.0/include|-L$(GLIB_ROOT)/lib|g' Makefile",
+                # "sed -i 's|||g' Makefile",
+            ],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            "name": "libxmlpp", "version": "2.6",
+            "nix_packages": ["glibmm", "libxml2", "libsigcxx", "pkg-config"],
+            # "required_projects": {"omnetpp": ["4.6.x"]},
+            "download_url": "https://download.gnome.org/sources/libxml++/2.6/libxml%2B%2B-2.6.1.tar.gz",
+            "setenv_commands": [
+                                # "export PKG_CONFIG_PATH=${pkgs.libxml2.dev}/include/libxml2",
+                                "export PKG_CONFIG_PATH=${pkgs.libxml2.dev}/lib/pkgconfig",
+                                "PKG_CONFIG_PATH=${pkgs.glibmm.dev}/lib/pkgconfig:$PKG_CONFIG_PATH",
+                                "PKG_CONFIG_PATH=${pkgs.glib.dev}/lib/pkgconfig:$PKG_CONFIG_PATH",
+                                "PKG_CONFIG_PATH=${pkgs.libsigcxx}/lib/pkgconfig:$PKG_CONFIG_PATH",
+                                "PKG_CONFIG_PATH=${pkgs.pkg-config}:$PKG_CONFIG_PATH",
+                                "echo 'PKG_CONFIG_PATH: ' && echo $PKG_CONFIG_PATH",
+                                ],
+            # "patch_commands": [
+            # #     "sed -i 's|from elementtree|from xml.etree|' */*/*/*.py",
+            #     "sed -i 's|-I/usr/include/libxml2|-I${pkgs.libxml2.dev}/include/libxml2|g' Makefile",
+            #     "sed -i 's|-I/usr/include/libxml++-2.6|-I${pkgs.libxmlxx}|g' Makefile",
+            #     "sed -i 's|-I/usr/lib/x86_64-linux-gnu/libxml++-2.6/include||g' Makefile",
+            # ],
+            # "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "build_commands": ["./configure"],
+            "clean_commands": ["make clean"],
+        },
+
+        {   # DONE
+            "name": "inet", "version": "20100323",
+            "required_projects": {"omnetpp": ["4.1.0"]},
+            "download_url": "https://github.com/inet-framework/inet/releases/download/master_20100323/inet-20100323-src.tgz",
+            "patch_commands": [
+                "sed -i 's|  int octals\\[8\\] = |  unsigned int octals[8] = |' src/networklayer/contract/IPv6Address.cc",
+                "sed -i 's|findGap(int \\*octals|findGap(unsigned int *octals|' src/networklayer/contract/IPv6Address.cc",
+                "sed -i 's|machine/endian|endian|' src/util/headerserializers/headers/defs.h",
+                "sed -i 's|info\\[\\]|info[0]|' src/util/headerserializers/headers/sctp.h",
+                "sed -i 's|addr.sin_len|// addr.sin_len|' src/linklayer/ext/*.cc",  # ugly hack? this is needed on apple
+            ],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
     ]
