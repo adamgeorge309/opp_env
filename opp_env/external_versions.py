@@ -139,35 +139,6 @@ def get_project_descriptions():
 
         {
             # DONE - ok
-            "name": "rspsim", "version": "6.1.2",
-            "required_projects": {"omnetpp": ["6.0", "5.7"]},
-            "download_url": "https://github.com/dreibh/rspsim/archive/refs/tags/rspsim-6.1.2.tar.gz",
-            "patch_commands": [
-                "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/poolelementnode-template.h",
-                "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/transportaddressblock.c"
-            ],
-            "build_commands": ["cd model && opp_makemake -f && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
-        },
-
-        {
-            # DONE - ok
-            "name": "rina", "version": "master",
-            "required_projects": {"omnetpp": ["5.2"]},
-            "git_url": "https://github.com/kvetak/RINA.git",
-            "patch_commands": [
-                "sed -i -E 's|-O out|-O out -I. -I../src|g' makemakefiles",
-            ],
-            "setenv_commands": [
-                "echo 'Hint: use `./simulate.sh examples/Demos/UseCase1/ -G -c Ping`'",
-            ],
-            "build_commands": ["make -f makemakefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"]
-            # ./simulate.sh examples/Demos/UseCase1/ -G -c Ping
-        },
-
-        {
-            # DONE - ok
             "name": "keetchlib", "version": "master",
             "nix_packages": ["autoconf", "automake", "libtool"],
             "git_url": "https://github.com/ComNets-Bremen/KeetchiLib.git",
@@ -264,6 +235,35 @@ def get_project_descriptions():
             "clean_commands": ["make clean"]
         },
 
+                {
+            # DONE - ok
+            "name": "rspsim", "version": "6.1.2",
+            "required_projects": {"omnetpp": ["6.0", "5.7"]},
+            "download_url": "https://github.com/dreibh/rspsim/archive/refs/tags/rspsim-6.1.2.tar.gz",
+            "patch_commands": [
+                "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/poolelementnode-template.h",
+                "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/transportaddressblock.c"
+            ],
+            "build_commands": ["cd model && opp_makemake -f && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # DONE - ok
+            "name": "rina", "version": "master",
+            "required_projects": {"omnetpp": ["5.2"]},
+            "git_url": "https://github.com/kvetak/RINA.git",
+            "patch_commands": [
+                "sed -i -E 's|-O out|-O out -I. -I../src|g' makemakefiles",
+            ],
+            "setenv_commands": [
+                "echo 'Hint: use `./simulate.sh examples/Demos/UseCase1/ -G -c Ping`'",
+            ],
+            "build_commands": ["make -f makemakefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"]
+            # ./simulate.sh examples/Demos/UseCase1/ -G -c Ping
+        },
+
         {
             # DONE
             "name": "ieee802154standalone", "version": "master",
@@ -297,6 +297,129 @@ def get_project_descriptions():
             ],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"]
+        },
+
+        {
+            "name": "oversim", "version": "20190424",
+            "required_projects": {"inet": ["3.6.*"], "omnetpp": ["5.4.*"]},
+            "download_url": "https://github.com/inet-framework/oversim/archive/refs/tags/v20190424.tar.gz",
+            "patch_commands": ["sed -i -E 's|INETDIR = .*|INETDIR = $(INET_ROOT)|' Makefile"],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && sed -i -E \"s|ned-path = .*|ned-path = $INET_ROOT/src;../src|\" simulations/default.ini"],
+            "clean_commands": ["make clean"],
+            "description": "DONE"
+        },
+
+        {
+            # DONE - needs to be run in debug by default so far
+            "name": "dctrafficgen", "version": "master",
+            "nix_packages": ["libxml2"],
+            "required_projects": {"omnetpp": ["4.6.x"]}, # TODO try 4.6
+            "git_url": "https://github.com/Mellanox/DCTrafficGen.git",
+            "patch_commands": [
+                "sed -i 's|/usr/include/libxml2/|${pkgs.libxml2.dev}/include/libxml2|g' Makefile dctg_example/Makefile",
+            ],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd dctg_example && make makefiles && make"],
+            "clean_commands": ["make clean"]
+            # run example simulation from dctg_example/simulations folder with:
+            # ../out/clang-debug/src/dctg_example -u Qtenv -f omnetpp.ini -n ../../src:../src
+        },
+
+        {
+            # DONE
+            "name": "afdx", "version": "master",
+            "required_projects": {"omnetpp": ["6.0.0"]},
+            "git_url": "https://github.com/badapplexx/AFDX.git",
+            "patch_commands": [
+                "sed -i 's|.:../src|.:../src:../../queueinglib|g' afdx/simulations/run",
+            ],
+            "build_commands": ["cd queueinglib && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd ../afdx && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd simulations && chmod +x run && chmod +x run_ancat"],
+            "setenv_commands": ["echo 'Hint: in the afdx/simulations folder, use the ./run AutoNetwork.ini command to run the simulation'"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # WORKS - need to start with -i images, otherwise some node images are missing; 
+            # uses git submodules for external libraries (should we use nix packages?) we shouldn't
+            "name": "quisp", "version": "master",
+            # "nix_packages": ['eigen'],
+            "required_projects": {"omnetpp": ["6.0.0"]},
+            "git_url": "https://github.com/sfc-aqua/quisp.git",
+            "patch_commands": [
+                # "sed -i 's|||g' ",
+            ],
+            "build_commands": ["make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+            # in quisp dir, run: 
+            # ./quisp -i images simulations/two_nodes.ini
+        },
+
+        {
+            # DONE
+            "name": "cell", "version": "master",
+            "description": "biological cell simulation",
+            "required_projects": {"omnetpp": ["4.0.x"]},
+            "git_url": "https://github.com/dhuertas/cell-signaling.git",
+            "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+            # run example simulation from src folder with:
+            # ./cell -n .. ../networks/demo.ini
+        },
+
+        {
+            # DONE
+            "name": "inetmanet", "version": "3.x",
+            "required_projects": {"omnetpp": ["5.7.x"]},
+            "git_url": "https://github.com/aarizaq/inetmanet-3.x.git",
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # DONE
+            "name": "inetmanet", "version": "4.0.0",
+            "required_projects": {"omnetpp": ["5.4.x"]},
+            "download_url": "https://github.com/aarizaq/inetmanet-4.x/archive/refs/tags/v4.0.0.tar.gz",
+            "setenv_commands": [". setenv -f"],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
+
+        {
+            # DONE - by default needs omnetpp debug
+            "name": "ndnomnet", "version": "master",
+            "required_projects": {"omnetpp": ["5.1.x"]},
+            "git_url": "https://github.com/amar-ox/NDNOMNeT.git",
+            "patch_commands": [
+                "sed -i.bak 's|->spp_hbinterval > 0|->spp_hbinterval->getNum() > 0|' inet/src/inet/applications/packetdrill/PacketDrillApp.cc",
+                "sed -i.bak 's|->spp_pathmaxrxt > 0|->spp_pathmaxrxt->getNum() > 0|' inet/src/inet/applications/packetdrill/PacketDrillApp.cc",
+            ],
+            "build_commands": ["cd inet && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
+        },
+        
+        {
+            # DONE - only builds with just 'make'; TwoSubnets example works, but segfault when running some other simulations
+            "name": "oppbsd", "version": "4.0",
+            "required_projects": {"omnetpp": ["4.2.0"]},
+            "download_url": "https://svn.tm.kit.edu/trac/OppBSD/downloads/2",
+            "build_commands": ["make"],
+            "setenv_commands": ["echo 'Hint: run example simulations from their folder. For example, in examples/TwoSubnets folder: ./out/gcc-debug/TwoSubnets omnetpp.ini"],
+            "clean_commands": ["make clean"],
+        },
+        
+                {   # DONE
+            "name": "inet", "version": "20100323",
+            "required_projects": {"omnetpp": ["4.1.0"]},
+            "download_url": "https://github.com/inet-framework/inet/releases/download/master_20100323/inet-20100323-src.tgz",
+            "patch_commands": [
+                "sed -i 's|  int octals\\[8\\] = |  unsigned int octals[8] = |' src/networklayer/contract/IPv6Address.cc",
+                "sed -i 's|findGap(int \\*octals|findGap(unsigned int *octals|' src/networklayer/contract/IPv6Address.cc",
+                "sed -i 's|machine/endian|endian|' src/util/headerserializers/headers/defs.h",
+                "sed -i 's|info\\[\\]|info[0]|' src/util/headerserializers/headers/sctp.h",
+                "sed -i 's|addr.sin_len|// addr.sin_len|' src/linklayer/ext/*.cc",  # ugly hack? this is needed on apple
+            ],
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
         },
      
         {
@@ -391,16 +514,6 @@ def get_project_descriptions():
         },
 
         {
-            "name": "oversim", "version": "20190424",
-            "required_projects": {"inet": ["3.6.*"], "omnetpp": ["5.4.*"]},
-            "download_url": "https://github.com/inet-framework/oversim/archive/refs/tags/v20190424.tar.gz",
-            "patch_commands": ["sed -i -E 's|INETDIR = .*|INETDIR = $(INET_ROOT)|' Makefile"],
-            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && sed -i -E \"s|ned-path = .*|ned-path = $INET_ROOT/src;../src|\" simulations/default.ini"],
-            "clean_commands": ["make clean"],
-            "description": "DONE"
-        },
-
-        {
             # needs inet version before 2.0.0
             "name": "epon", "version": "0.8",
             "required_projects": {"omnetpp": ["4.1.0"], "inet": ["2.0.0"]},
@@ -471,21 +584,6 @@ def get_project_descriptions():
         },
 
         {
-            # DONE - needs to be run in debug by default so far
-            "name": "dctrafficgen", "version": "master",
-            "nix_packages": ["libxml2"],
-            "required_projects": {"omnetpp": ["4.6.x"]}, # TODO try 4.6
-            "git_url": "https://github.com/Mellanox/DCTrafficGen.git",
-            "patch_commands": [
-                "sed -i 's|/usr/include/libxml2/|${pkgs.libxml2.dev}/include/libxml2|g' Makefile dctg_example/Makefile",
-            ],
-            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd dctg_example && make makefiles && make"],
-            "clean_commands": ["make clean"]
-            # run example simulation from dctg_example/simulations folder with:
-            # ../out/clang-debug/src/dctg_example -u Qtenv -f omnetpp.ini -n ../../src:../src
-        },
-
-        {
             # WIP - no makefile? there is one in src/utils but seems broken
             "name": "dns", "version": "master",
             "required_projects": {"omnetpp": ["4.6.0"], "inet": ["3.1.0"]},
@@ -514,35 +612,6 @@ def get_project_descriptions():
         },
 
         {
-            # DONE
-            "name": "afdx", "version": "master",
-            "required_projects": {"omnetpp": ["6.0.0"]},
-            "git_url": "https://github.com/badapplexx/AFDX.git",
-            "patch_commands": [
-                "sed -i 's|.:../src|.:../src:../../queueinglib|g' afdx/simulations/run",
-            ],
-            "build_commands": ["cd queueinglib && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd ../afdx && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd simulations && chmod +x run && chmod +x run_ancat"],
-            "setenv_commands": ["echo 'Hint: in the afdx/simulations folder, use the ./run AutoNetwork.ini command to run the simulation'"],
-            "clean_commands": ["make clean"],
-        },
-
-        {
-            # WORKS - need to start with -i images, otherwise some node images are missing; 
-            # uses git submodules for external libraries (should we use nix packages?) we shouldn't
-            "name": "quisp", "version": "master",
-            # "nix_packages": ['eigen'],
-            "required_projects": {"omnetpp": ["6.0.0"]},
-            "git_url": "https://github.com/sfc-aqua/quisp.git",
-            "patch_commands": [
-                # "sed -i 's|||g' ",
-            ],
-            "build_commands": ["make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
-            # in quisp dir, run: 
-            # ./quisp -i images simulations/two_nodes.ini
-        },
-
-        {
             # WIP - cant extract, wrong password
             "name": "ble", "version": "master",
             "required_projects": {"omnetpp": ["6.0.0"]},
@@ -552,18 +621,6 @@ def get_project_descriptions():
             ],
             # "build_commands": ["make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
-        },
-
-        {
-            # DONE
-            "name": "cell", "version": "master",
-            "description": "biological cell simulation",
-            "required_projects": {"omnetpp": ["4.0.x"]},
-            "git_url": "https://github.com/dhuertas/cell-signaling.git",
-            "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
-            # run example simulation from src folder with:
-            # ./cell -n .. ../networks/demo.ini
         },
 
         {
@@ -582,25 +639,6 @@ def get_project_descriptions():
             "clean_commands": ["make clean"],
             # run example simulation from src folder with:
             # ./cell -n .. ../networks/demo.ini
-        },
-
-        {
-            # DONE
-            "name": "inetmanet", "version": "3.x",
-            "required_projects": {"omnetpp": ["5.7.x"]},
-            "git_url": "https://github.com/aarizaq/inetmanet-3.x.git",
-            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
-        },
-
-        {
-            # DONE
-            "name": "inetmanet", "version": "4.0.0",
-            "required_projects": {"omnetpp": ["5.4.x"]},
-            "download_url": "https://github.com/aarizaq/inetmanet-4.x/archive/refs/tags/v4.0.0.tar.gz",
-            "setenv_commands": [". setenv -f"],
-            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
         },
 
         {
@@ -661,19 +699,6 @@ def get_project_descriptions():
         },
 
         {
-            # DONE - by default needs omnetpp debug
-            "name": "ndnomnet", "version": "master",
-            "required_projects": {"omnetpp": ["5.1.x"]},
-            "git_url": "https://github.com/amar-ox/NDNOMNeT.git",
-            "patch_commands": [
-                "sed -i.bak 's|->spp_hbinterval > 0|->spp_hbinterval->getNum() > 0|' inet/src/inet/applications/packetdrill/PacketDrillApp.cc",
-                "sed -i.bak 's|->spp_pathmaxrxt > 0|->spp_pathmaxrxt->getNum() > 0|' inet/src/inet/applications/packetdrill/PacketDrillApp.cc",
-            ],
-            "build_commands": ["cd inet && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
-        },
-
-        {
             # WIP - build errors; this might need inet 2.1.0?
             "name": "neta", "version": "1.0",
             "required_projects": {"omnetpp": ["4.2.1"], "inet": ["2.2.0"]},
@@ -684,16 +709,6 @@ def get_project_descriptions():
             # ],
             # "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "build_commands": ["cd src && opp_makemake -f --deep -o neta -O out -KINET_PROJ=$INET_ROOT -DINET_IMPORT -L$INET_ROOT/src -I. -I$INET_ROOT/src -I$INET_ROOT/src/applications -I$INET_ROOT/src/applications/dhcp -I$INET_ROOT/src/applications/ethernet -I$INET_ROOT/src/applications/generic -I$INET_ROOT/src/applications/httptools -I$INET_ROOT/src/applications/pingapp -I$INET_ROOT/src/applications/rtpapp -I$INET_ROOT/src/applications/sctpapp -I$INET_ROOT/src/applications/tcpapp -I$INET_ROOT/src/applications/traci -I$INET_ROOT/src/applications/udpapp -I$INET_ROOT/src/applications/voip -I$INET_ROOT/src/base -I$INET_ROOT/src/battery -I$INET_ROOT/src/battery/models -I$INET_ROOT/src/linklayer -I$INET_ROOT/src/linklayer/common -I$INET_ROOT/src/linklayer/contract -I$INET_ROOT/src/linklayer/ethernet -I$INET_ROOT/src/linklayer/ethernet/switch -I$INET_ROOT/src/linklayer/ext -I$INET_ROOT/src/linklayer/idealwireless -I$INET_ROOT/src/linklayer/ieee80211 -I$INET_ROOT/src/linklayer/ieee80211/mac -I$INET_ROOT/src/linklayer/ieee80211/mgmt -I$INET_ROOT/src/linklayer/ieee80211/radio -I$INET_ROOT/src/linklayer/ieee80211/radio/errormodel -I$INET_ROOT/src/linklayer/loopback -I$INET_ROOT/src/linklayer/ppp -I$INET_ROOT/src/linklayer/queue -I$INET_ROOT/src/linklayer/radio -I$INET_ROOT/src/linklayer/radio/propagation -I$INET_ROOT/src/mobility -I$INET_ROOT/src/mobility/models -I$INET_ROOT/src/networklayer -I$INET_ROOT/src/networklayer/arp -I$INET_ROOT/src/networklayer/autorouting -I$INET_ROOT/src/networklayer/autorouting/ipv4 -I$INET_ROOT/src/networklayer/autorouting/ipv6 -I$INET_ROOT/src/networklayer/bgpv4 -I$INET_ROOT/src/networklayer/bgpv4/BGPMessage -I$INET_ROOT/src/networklayer/common -I$INET_ROOT/src/networklayer/contract -I$INET_ROOT/src/networklayer/diffserv -I$INET_ROOT/src/networklayer/icmpv6 -I$INET_ROOT/src/networklayer/internetcloud -I$INET_ROOT/src/networklayer/ipv4 -I$INET_ROOT/src/networklayer/ipv6 -I$INET_ROOT/src/networklayer/ipv6tunneling -I$INET_ROOT/src/networklayer/ldp -I$INET_ROOT/src/networklayer/manetrouting -I$INET_ROOT/src/networklayer/manetrouting/aodv -I$INET_ROOT/src/networklayer/manetrouting/aodv/aodv-uu -I$INET_ROOT/src/networklayer/manetrouting/base -I$INET_ROOT/src/networklayer/manetrouting/batman -I$INET_ROOT/src/networklayer/manetrouting/batman/batmand -I$INET_ROOT/src/networklayer/manetrouting/batman/batmand/orig -I$INET_ROOT/src/networklayer/manetrouting/dsdv -I$INET_ROOT/src/networklayer/manetrouting/dsr -I$INET_ROOT/src/networklayer/manetrouting/dsr/dsr-uu -I$INET_ROOT/src/networklayer/manetrouting/dymo -I$INET_ROOT/src/networklayer/manetrouting/dymo/dymoum -I$INET_ROOT/src/networklayer/manetrouting/dymo_fau -I$INET_ROOT/src/networklayer/manetrouting/olsr -I$INET_ROOT/src/networklayer/mpls -I$INET_ROOT/src/networklayer/ospfv2 -I$INET_ROOT/src/networklayer/ospfv2/interface -I$INET_ROOT/src/networklayer/ospfv2/messagehandler -I$INET_ROOT/src/networklayer/ospfv2/neighbor -I$INET_ROOT/src/networklayer/ospfv2/router -I$INET_ROOT/src/networklayer/rsvp_te -I$INET_ROOT/src/networklayer/ted -I$INET_ROOT/src/networklayer/xmipv6 -I$INET_ROOT/src/nodes -I$INET_ROOT/src/nodes/bgp -I$INET_ROOT/src/nodes/ethernet -I$INET_ROOT/src/nodes/httptools -I$INET_ROOT/src/nodes/inet -I$INET_ROOT/src/nodes/internetcloud -I$INET_ROOT/src/nodes/ipv6 -I$INET_ROOT/src/nodes/mpls -I$INET_ROOT/src/nodes/ospfv2 -I$INET_ROOT/src/nodes/rtp -I$INET_ROOT/src/nodes/wireless -I$INET_ROOT/src/nodes/xmipv6 -I$INET_ROOT/src/status -I$INET_ROOT/src/transport -I$INET_ROOT/src/transport/contract -I$INET_ROOT/src/transport/rtp -I$INET_ROOT/src/transport/rtp/profiles -I$INET_ROOT/src/transport/rtp/profiles/avprofile -I$INET_ROOT/src/transport/sctp -I$INET_ROOT/src/transport/tcp -I$INET_ROOT/src/transport/tcp/flavours -I$INET_ROOT/src/transport/tcp/queues -I$INET_ROOT/src/transport/tcp_common -I$INET_ROOT/src/transport/udp -I$INET_ROOT/src/util -I$INET_ROOT/src/util/headerserializers -I$INET_ROOT/src/util/headerserializers/headers -I$INET_ROOT/src/util/headerserializers/ipv4 -I$INET_ROOT/src/util/headerserializers/ipv4/headers -I$INET_ROOT/src/util/headerserializers/sctp -I$INET_ROOT/src/util/headerserializers/sctp/headers -I$INET_ROOT/src/util/headerserializers/tcp -I$INET_ROOT/src/util/headerserializers/tcp/headers -I$INET_ROOT/src/util/headerserializers/udp -I$INET_ROOT/src/util/headerserializers/udp/headers -I$INET_ROOT/src/world -I$INET_ROOT/src/world/annotations -I$INET_ROOT/src/world/httptools -I$INET_ROOT/src/world/obstacles -I$INET_ROOT/src/world/radio -I$INET_ROOT/src/world/scenario -I$INET_ROOT/src/world/traci -linet && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "clean_commands": ["make clean"],
-        },
-
-        {
-            # DONE - only builds with just 'make'; TwoSubnets example works, but segfault when running some other simulations
-            "name": "oppbsd", "version": "4.0",
-            "required_projects": {"omnetpp": ["4.2.0"]},
-            "download_url": "https://svn.tm.kit.edu/trac/OppBSD/downloads/2",
-            "build_commands": ["make"],
-            "setenv_commands": ["echo 'Hint: run example simulations from their folder. For example, in examples/TwoSubnets folder: ./out/gcc-debug/TwoSubnets omnetpp.ini"],
             "clean_commands": ["make clean"],
         },
 
@@ -869,21 +884,6 @@ def get_project_descriptions():
             # ],
             # "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "build_commands": ["./configure"],
-            "clean_commands": ["make clean"],
-        },
-
-        {   # DONE
-            "name": "inet", "version": "20100323",
-            "required_projects": {"omnetpp": ["4.1.0"]},
-            "download_url": "https://github.com/inet-framework/inet/releases/download/master_20100323/inet-20100323-src.tgz",
-            "patch_commands": [
-                "sed -i 's|  int octals\\[8\\] = |  unsigned int octals[8] = |' src/networklayer/contract/IPv6Address.cc",
-                "sed -i 's|findGap(int \\*octals|findGap(unsigned int *octals|' src/networklayer/contract/IPv6Address.cc",
-                "sed -i 's|machine/endian|endian|' src/util/headerserializers/headers/defs.h",
-                "sed -i 's|info\\[\\]|info[0]|' src/util/headerserializers/headers/sctp.h",
-                "sed -i 's|addr.sin_len|// addr.sin_len|' src/linklayer/ext/*.cc",  # ugly hack? this is needed on apple
-            ],
-            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
         },
     ]
