@@ -217,7 +217,7 @@ def get_project_descriptions():
             "patch_commands": ["sed -i -E 's|INET_PROJECT_DIR=.*|INET_PROJECT_DIR=$(INET_ROOT)|' Makefile"],
             "setenv_commands": [
                 "export PATH=$MIXIM_ROOT/src:$PATH",
-                "echo 'Hint: Use `./run` in the examples and examples-inet subfolders.'"
+                "echo 'Hint: Use `./run` command in the examples and examples-inet subfolders.'"
             ],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
@@ -237,7 +237,12 @@ def get_project_descriptions():
 
                 {
             # DONE - ok
+            # WIP trying to build tools in toolchain dir
             "name": "rspsim", "version": "6.1.2",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/RSPSIM.html",
+            },
+            "nix_packages": ["haskellPackages.bzlib-conduit"],
             "required_projects": {"omnetpp": ["6.0", "5.7"]},
             "download_url": "https://github.com/dreibh/rspsim/archive/refs/tags/rspsim-6.1.2.tar.gz",
             "patch_commands": [
@@ -245,6 +250,7 @@ def get_project_descriptions():
                 "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/transportaddressblock.c"
             ],
             "build_commands": ["cd model && opp_makemake -f && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "setenv_commands": ["echo 'Hint: Use `./model` command in the model folder. For example: ./model test1.ini'"],
             "clean_commands": ["make clean"],
         },
 
@@ -265,10 +271,15 @@ def get_project_descriptions():
         },
 
         {
-            # DONE
+            # DONE - builds and starts, simulations run, but segfault after some time (tested with inet 2.6, 2.4)
             "name": "ieee802154standalone", "version": "master",
-            "required_projects": {"omnetpp": ["4.6"], "inet": ["2.6.0"]},
+            "description": "IEEE 802.15.4-2006 simulation model for OMNeT++ / INET",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/IEEE802154INET-Standalone.html",
+            },
+            "required_projects": {"omnetpp": ["4.6.x"], "inet": ["2.6.0"]},
             "git_url": "https://github.com/michaelkirsche/IEEE802154INET-Standalone.git",
+            "setenv_commands": ["echo 'Hint: use the ./run command in the simulations folder.'"],
             "patch_commands": [
                 "sed -i 's|INETDefs.h|base/INETDefs.h|g' src/*/*.h",
                 "sed -i 's|ChannelAccess.h|world/radio/ChannelAccess.h|g' src/*/*.h",
@@ -284,11 +295,16 @@ def get_project_descriptions():
         {
             # compiles and runs, but needs weather API access to test
             "name": "os3", "version": "master",
+            "description": "Open Source Satellite Simulator",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/OS3.html",
+            },
             "nix_packages": ["curl", "tcl"],
             "required_projects": {"omnetpp": ["4.2"], "inet": ["2.2.0"]},
             "download_url": "https://github.com/inet-framework/os3/archive/refs/tags/v1.0.tar.gz",
             "setenv_commands": ["export INET_PROJ=$INET_ROOT",
-                                "export TCL_LIBRARY=$TCLLIBPATH"],
+                                "export TCL_LIBRARY=$TCLLIBPATH",
+                                "echo 'Hint: use the ./run command in the simulations folder. For example: ./run Validation/omnetpp.ini'"],
             "patch_commands": [
                 "sed -i -E 's|-KINET_PROJ=[^ ]+|-KINET_PROJ=$(INET_ROOT)|' Makefile",
                 "sed -i 's|$DIR/../../inet|$INET_ROOT|' src/run_cni-os3",
@@ -300,33 +316,45 @@ def get_project_descriptions():
         },
 
         {
+            # DONE
             "name": "oversim", "version": "20190424",
+            "description": "Overlay and Peer-to-Peer Network Simulation Framework",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/OverSim.html",
+            },
             "required_projects": {"inet": ["3.6.*"], "omnetpp": ["5.4.*"]},
             "download_url": "https://github.com/inet-framework/oversim/archive/refs/tags/v20190424.tar.gz",
+            "setenv_commands": ["echo 'Hint: use the ../src/OverSim omnetpp.ini command in the simulations folder."],
             "patch_commands": ["sed -i -E 's|INETDIR = .*|INETDIR = $(INET_ROOT)|' Makefile"],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && sed -i -E \"s|ned-path = .*|ned-path = $INET_ROOT/src;../src|\" simulations/default.ini"],
             "clean_commands": ["make clean"],
-            "description": "DONE"
         },
 
         {
-            # DONE - needs to be run in debug by default so far
+            # DONE
             "name": "dctrafficgen", "version": "master",
+            "description": "Data Center Traffic Generator Library",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/DCTrafficGen.html",
+            },
             "nix_packages": ["libxml2"],
-            "required_projects": {"omnetpp": ["4.6.x"]}, # TODO try 4.6
+            "required_projects": {"omnetpp": ["4.6.x"]},
             "git_url": "https://github.com/Mellanox/DCTrafficGen.git",
+            "setenv_commands": ["echo 'Hint: use the ../src/dctg_example -f omnetpp.ini -n ../../src:../src command in the dctf_example/simulations folder.'"],
             "patch_commands": [
                 "sed -i 's|/usr/include/libxml2/|${pkgs.libxml2.dev}/include/libxml2|g' Makefile dctg_example/Makefile",
             ],
-            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd dctg_example && make makefiles && make"],
-            "clean_commands": ["make clean"]
-            # run example simulation from dctg_example/simulations folder with:
-            # ../out/clang-debug/src/dctg_example -u Qtenv -f omnetpp.ini -n ../../src:../src
+            "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd dctg_example && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "clean_commands": ["make clean"],
         },
 
         {
             # DONE
             "name": "afdx", "version": "master",
+            "description": "Avionics Full-Duplex Switched Ethernet model for OMNeT++",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/Afdx.html",
+            },
             "required_projects": {"omnetpp": ["6.0.0"]},
             "git_url": "https://github.com/badapplexx/AFDX.git",
             "patch_commands": [
@@ -338,49 +366,62 @@ def get_project_descriptions():
         },
 
         {
-            # WORKS - need to start with -i images, otherwise some node images are missing; 
-            # uses git submodules for external libraries (should we use nix packages?) we shouldn't
+            # DONE
             "name": "quisp", "version": "master",
-            # "nix_packages": ['eigen'],
+            "description": "Quantum Internet Simulation Package",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/QuISP.html",
+            },
             "required_projects": {"omnetpp": ["6.0.0"]},
             "git_url": "https://github.com/sfc-aqua/quisp.git",
-            "patch_commands": [
-                # "sed -i 's|||g' ",
-            ],
-            "build_commands": ["make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "setenv_commands": ["export OMNETPP_IMAGE_PATH=$QUISP_ROOT/quisp/images:$OMNETPP_IMAGE_PATH",
+                                "echo 'Hint: in the quisp folder, use the ./quisp command to run simulations. For example: ./quisp simulations/two_nodes.ini'"],
+            "build_commands": ["make IMAGE_PATH=quisp/images/ -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
-            # in quisp dir, run: 
-            # ./quisp -i images simulations/two_nodes.ini
         },
 
         {
             # DONE
             "name": "cell", "version": "master",
-            "description": "biological cell simulation",
+            "description": "Cell Communication Signaling Project (biological)",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/CellSignaling.html",
+            },
             "required_projects": {"omnetpp": ["4.0.x"]},
             "git_url": "https://github.com/dhuertas/cell-signaling.git",
+            "setenv_commands": ["echo 'Hint: in the src folder, use the ../cell command to run simulations. For example: ./cell -n .. ../networks/demo.ini'"],
             "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
-            # run example simulation from src folder with:
-            # ./cell -n .. ../networks/demo.ini
         },
 
         {
             # DONE
-            "name": "inetmanet", "version": "3.x",
+            "name": "inetmanet", "version": "3.8.2",
+            "description": "Fork of INET 3.x, containing additional adhoc routing protocols and other models written by the community",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/INETMANET-3.x.html",
+            },
             "required_projects": {"omnetpp": ["5.7.x"]},
-            "git_url": "https://github.com/aarizaq/inetmanet-3.x.git",
+            "download_url": "https://github.com/aarizaq/inetmanet-3.x/archive/a206218213f96382217a8653ede21f15974c4e70.tar.gz",
+            "patch_commands": ["find . -type f -name 'run' -exec chmod +x {} \;"],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "setenv_commands": ["echo 'Hint: use the ./run command in any example simulation folder.'"],
             "clean_commands": ["make clean"],
         },
 
         {
             # DONE
             "name": "inetmanet", "version": "4.0.0",
+            "description": "Fork of INET 4.x, extending it with experimental features and protocols, mainly for mobile ad hoc networks, many of which are written by Alfonso Ariza",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/INETMANET-4.x.html",
+            },
             "required_projects": {"omnetpp": ["5.4.x"]},
             "download_url": "https://github.com/aarizaq/inetmanet-4.x/archive/refs/tags/v4.0.0.tar.gz",
-            "setenv_commands": [". setenv -f"],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "setenv_commands": [
+                ". setenv -f",
+                "echo 'Hint: use the inet command in any example simulation folder.'"],
             "clean_commands": ["make clean"],
         },
 
