@@ -242,12 +242,11 @@ def get_project_descriptions():
             "metadata": {
                 "catalog_url": "https://omnetpp.org/download-items/RSPSIM.html",
             },
-            "nix_packages": ["haskellPackages.bzlib-conduit"],
             "required_projects": {"omnetpp": ["6.0", "5.7"]},
             "download_url": "https://github.com/dreibh/rspsim/archive/refs/tags/rspsim-6.1.2.tar.gz",
             "patch_commands": [
                 "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/poolelementnode-template.h",
-                "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/transportaddressblock.c"
+                "sed -i -E 's|<ext_socket.h>|\"ext_socket.h\"|' model/transportaddressblock.c",
             ],
             "build_commands": ["cd model && opp_makemake -f && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "setenv_commands": ["echo 'Hint: Use `./model` command in the model folder. For example: ./model test1.ini'"],
@@ -293,7 +292,7 @@ def get_project_descriptions():
         },
         
         {
-            # compiles and runs, but needs weather API access to test
+            # DONE - compiles and runs, but needs weather API access to test
             "name": "os3", "version": "master",
             "description": "Open Source Satellite Simulator",
             "metadata": {
