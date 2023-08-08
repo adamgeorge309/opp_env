@@ -17,7 +17,7 @@ def get_project_descriptions():
             "setenv_commands": [
                 "export NEDPATH=$NEDPATH:$FICO4OMNET_ROOT/src:$FICO4OMNET_ROOT/examples:$FICO4OMNET_ROOT/examples_andl:$FICO4OMNET_ROOT/simulations",
                 "export PATH=$PATH:$FICO4OMNET_ROOT/bin",
-                "echo 'Hint: use the run_fico4omnet command to run the simulations in the examples folder.'"
+                "echo 'Hint: use the `run_fico4omnet` command to run the simulations in the examples folder.'"
             ],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"]
@@ -41,7 +41,7 @@ def get_project_descriptions():
                 "sed -i 's|DIR=`dirname $0`|DIR=`dirname \\$0`/../src|' bin/run_inet"
             ],
             "setenv_commands": [
-                "echo 'Hint: use the run_inet command to run the simulations in the examples/ansa folder.'",
+                "echo 'Hint: use the `run_inet` command to run the simulations in the examples/ansa folder.'",
                 "export PATH=$PATH:$ANSA_ROOT/bin"
             ],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
@@ -67,7 +67,7 @@ def get_project_descriptions():
                 "sed -i -E 's|-KINET_PROJ=[^ ]+|-KINET_PROJ=$(INET_DIR)|' Makefile"
             ],
             "setenv_commands": [
-                "echo 'Hint: use the ./run command to run the example in the simulations folder.'",
+                "echo 'Hint: use the `./run` command to run the example in the simulations folder.'",
             ],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"]
@@ -79,7 +79,7 @@ def get_project_descriptions():
             "required_projects": {"omnetpp": ["5.5"], "inet": ["3.6.6"]},
             "download_url": "https://github.com/CoRE-RG/CoRE4INET/archive/refs/tags/nightly/2022-11-09_00-01-11.tar.gz",
             "setenv_commands": [
-                "echo 'Hint: use the ./rundemo command in the examples folder or the ./run command in any of the example subfolders.'",
+                "echo 'Hint: use the `./rundemo` command in the examples folder or the `./run` command in any of the example subfolders.'",
                 "export INETPATH=$INET_ROOT",
             ],
             "patch_commands": [
@@ -113,7 +113,7 @@ def get_project_descriptions():
             "git_url": "https://github.com/yanivbi/HNOCS.git",
             "git_branch": "master",
             "setenv_commands": [
-                "echo 'Hint: use the ./run_nocs command in the examples folder.'",
+                "echo 'Hint: use the `./run_nocs` command in the examples folder.'",
             ],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"]
@@ -126,7 +126,7 @@ def get_project_descriptions():
             "git_url": "https://gitlab.amd.e-technik.uni-rostock.de/peter.danielis/gptp-implementation.git",
             "setenv_commands": [
                 "export INET_PROJ=$INET_ROOT",
-                "echo 'Hint: use the ./run command in the simulations folder.'",
+                "echo 'Hint: use the `./run` command in the simulations folder.'",
             ],
             "patch_commands": [
                 "sed -i -E 's|ieee8021as|IEEE8021AS|' IEEE8021AS/simulations/run",
@@ -155,7 +155,7 @@ def get_project_descriptions():
             "setenv_commands": [
                 "export INET_PROJ=$INET_ROOT",
                 "export PATH=$PATH:$OPENFLOW_ROOT/src",
-                "echo 'Hint: use the run_openflow command to run the examples in the scenarios folder.'"
+                "echo 'Hint: use the `run_openflow` command to run the examples in the scenarios folder.'"
             ],
             "patch_commands": [
                 "sed -i -E 's|-KINET_PROJ=[^ ]+|-KINET_PROJ=$(INET_ROOT) -o openflow|' Makefile",
@@ -203,7 +203,7 @@ def get_project_descriptions():
             ],
             "setenv_commands": [
                 "export PATH=$PATH:$CASTALIA_ROOT/Castalia/bin",
-                "echo 'Hint: Use the Castalia command to run the examples in the Simulations folder.'"
+                "echo 'Hint: Use the `Castalia` command to run the examples in the Simulations folder.'"
             ],
             "build_commands": ["cd Castalia && ./makemake && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"]
@@ -279,7 +279,7 @@ def get_project_descriptions():
             },
             "required_projects": {"omnetpp": ["4.6.x"], "inet": ["2.6.0"]},
             "git_url": "https://github.com/michaelkirsche/IEEE802154INET-Standalone.git",
-            "setenv_commands": ["echo 'Hint: use the ./run command in the simulations folder.'"],
+            "setenv_commands": ["echo 'Hint: use the `./run` command in the simulations folder.'"],
             "patch_commands": [
                 "sed -i 's|INETDefs.h|base/INETDefs.h|g' src/*/*.h",
                 "sed -i 's|ChannelAccess.h|world/radio/ChannelAccess.h|g' src/*/*.h",
@@ -304,7 +304,7 @@ def get_project_descriptions():
             "download_url": "https://github.com/inet-framework/os3/archive/refs/tags/v1.0.tar.gz",
             "setenv_commands": ["export INET_PROJ=$INET_ROOT",
                                 "export TCL_LIBRARY=$TCLLIBPATH",
-                                "echo 'Hint: use the ./run command in the simulations folder. For example: ./run Validation/omnetpp.ini'"],
+                                "echo 'Hint: use the `./run` command in the simulations folder. For example: `./run Validation/omnetpp.ini`'"],
             "patch_commands": [
                 "sed -i -E 's|-KINET_PROJ=[^ ]+|-KINET_PROJ=$(INET_ROOT)|' Makefile",
                 "sed -i 's|$DIR/../../inet|$INET_ROOT|' src/run_cni-os3",
@@ -324,7 +324,7 @@ def get_project_descriptions():
             },
             "required_projects": {"inet": ["3.6.*"], "omnetpp": ["5.4.*"]},
             "download_url": "https://github.com/inet-framework/oversim/archive/refs/tags/v20190424.tar.gz",
-            "setenv_commands": ["echo 'Hint: use the ../src/OverSim omnetpp.ini command in the simulations folder."],
+            "setenv_commands": ["echo 'Hint: use the `../src/OverSim` omnetpp.ini command in the simulations folder."],
             "patch_commands": ["sed -i -E 's|INETDIR = .*|INETDIR = $(INET_ROOT)|' Makefile"],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && sed -i -E \"s|ned-path = .*|ned-path = $INET_ROOT/src;../src|\" simulations/default.ini"],
             "clean_commands": ["make clean"],
@@ -340,7 +340,7 @@ def get_project_descriptions():
             "nix_packages": ["libxml2"],
             "required_projects": {"omnetpp": ["4.6.x"]},
             "git_url": "https://github.com/Mellanox/DCTrafficGen.git",
-            "setenv_commands": ["echo 'Hint: use the ../src/dctg_example -f omnetpp.ini -n ../../src:../src command in the dctf_example/simulations folder.'"],
+            "setenv_commands": ["echo 'Hint: use the `../src/dctg_example -f omnetpp.ini -n ../../src:../src` command in the dctf_example/simulations folder.'"],
             "patch_commands": [
                 "sed -i 's|/usr/include/libxml2/|${pkgs.libxml2.dev}/include/libxml2|g' Makefile dctg_example/Makefile",
             ],
@@ -361,7 +361,7 @@ def get_project_descriptions():
                 "sed -i 's|.:../src|.:../src:../../queueinglib|g' afdx/simulations/run",
             ],
             "build_commands": ["cd queueinglib && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd ../afdx && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE && cd simulations && chmod +x run && chmod +x run_ancat"],
-            "setenv_commands": ["echo 'Hint: in the afdx/simulations folder, use the ./run AutoNetwork.ini command to run the simulation'"],
+            "setenv_commands": ["echo 'Hint: in the afdx/simulations folder, use the `./run AutoNetwork.ini` command to run the simulation'"],
             "clean_commands": ["make clean"],
         },
 
@@ -375,7 +375,7 @@ def get_project_descriptions():
             "required_projects": {"omnetpp": ["6.0.0"]},
             "git_url": "https://github.com/sfc-aqua/quisp.git",
             "setenv_commands": ["export OMNETPP_IMAGE_PATH=$QUISP_ROOT/quisp/images:$OMNETPP_IMAGE_PATH",
-                                "echo 'Hint: in the quisp folder, use the ./quisp command to run simulations. For example: ./quisp simulations/two_nodes.ini'"],
+                                "echo 'Hint: in the quisp folder, use the `./quisp` command to run simulations. For example: `./quisp simulations/two_nodes.ini`'"],
             "build_commands": ["make IMAGE_PATH=quisp/images/ -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
         },
@@ -389,7 +389,7 @@ def get_project_descriptions():
             },
             "required_projects": {"omnetpp": ["4.0.x"]},
             "git_url": "https://github.com/dhuertas/cell-signaling.git",
-            "setenv_commands": ["echo 'Hint: in the src folder, use the ../cell command to run simulations. For example: ./cell -n .. ../networks/demo.ini'"],
+            "setenv_commands": ["echo 'Hint: in the src folder, use the `./cell` command to run simulations. For example: `./cell -n .. ../networks/demo.ini`'"],
             "build_commands": ["cd src && opp_makemake -f --deep -O out -o cell && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "clean_commands": ["make clean"],
         },
@@ -405,7 +405,7 @@ def get_project_descriptions():
             "download_url": "https://github.com/aarizaq/inetmanet-3.x/archive/a206218213f96382217a8653ede21f15974c4e70.tar.gz",
             "patch_commands": ["find . -type f -name 'run' -exec chmod +x {} \;"],
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
-            "setenv_commands": ["echo 'Hint: use the ./run command in any example simulation folder.'"],
+            "setenv_commands": ["echo 'Hint: use the `./run` command in any example simulation folder.'"],
             "clean_commands": ["make clean"],
         },
 
@@ -421,13 +421,17 @@ def get_project_descriptions():
             "build_commands": ["make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
             "setenv_commands": [
                 ". setenv -f",
-                "echo 'Hint: use the inet command in any example simulation folder.'"],
+                "echo 'Hint: use the `inet` command in any example simulation folder.'"],
             "clean_commands": ["make clean"],
         },
 
         {
-            # DONE - by default needs omnetpp debug
+            # DONE
             "name": "ndnomnet", "version": "master",
+            "description": "Named Data Networking framework for OMNeT++",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/NDNOMNeT.html",
+            },
             "required_projects": {"omnetpp": ["5.1.x"]},
             "git_url": "https://github.com/amar-ox/NDNOMNeT.git",
             "patch_commands": [
@@ -435,20 +439,25 @@ def get_project_descriptions():
                 "sed -i.bak 's|->spp_pathmaxrxt > 0|->spp_pathmaxrxt->getNum() > 0|' inet/src/inet/applications/packetdrill/PacketDrillApp.cc",
             ],
             "build_commands": ["cd inet && make makefiles && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"],
+            "setenv_commands": ["echo 'Hint: use the `./run` command in any example simulation folder.'"],
             "clean_commands": ["make clean"],
         },
         
         {
             # DONE - only builds with just 'make'; TwoSubnets example works, but segfault when running some other simulations
             "name": "oppbsd", "version": "4.0",
+            "description": "OppBSD integrates essential parts of the real FreeBSD networking stack into OMNeT++ as a simulation model",
+            "metadata": {
+                "catalog_url": "https://omnetpp.org/download-items/OppBSD-4.0.html",
+            },
             "required_projects": {"omnetpp": ["4.2.0"]},
             "download_url": "https://svn.tm.kit.edu/trac/OppBSD/downloads/2",
             "build_commands": ["make"],
-            "setenv_commands": ["echo 'Hint: run example simulations from their folder. For example, in examples/TwoSubnets folder: ./out/gcc-debug/TwoSubnets omnetpp.ini"],
+            "setenv_commands": ["echo 'Hint: run example simulations from their folder. For example, in examples/TwoSubnets folder: `./out/gcc-debug/TwoSubnets omnetpp.ini`"],
             "clean_commands": ["make clean"],
         },
         
-                {   # DONE
+        {   # DONE - should be in inet_versions.py
             "name": "inet", "version": "20100323",
             "required_projects": {"omnetpp": ["4.1.0"]},
             "download_url": "https://github.com/inet-framework/inet/releases/download/master_20100323/inet-20100323-src.tgz",
