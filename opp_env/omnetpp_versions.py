@@ -101,13 +101,13 @@ def make_omnetpp_project_description(version, base_version=None):
         f"  curl -L -sS -o configure {github_url}/raw/omnetpp-{base_version}/configure",
         f"  curl -L -sS -o configure.in {github_url}/raw/omnetpp-{base_version}/configure.in",
         f"  curl -L -sS -o patchfile.diff {github_url}/compare/omnetpp-{base_version}...omnetpp-{version}.patch",
-        f"  git apply --whitespace=nowarn --exclude .gitignore --exclude 'ui/*' --exclude '**/Makefile.vc' patchfile.diff",
+        f"  git apply --whitespace=nowarn --allow-empty --exclude .gitignore --exclude 'ui/*' --exclude '**/Makefile.vc' patchfile.diff",
         'else',
         f'  [ -d $OMNETPP_REPO/.git ] || error "Error: OMNETPP_REPO=$OMNETPP_REPO is not set or does not point to a git repository on the local disk (required for obtaining patch to upgrade base release omnetpp-{base_version} to requested version omnetpp-{version})"',
         f"  git --git-dir=$OMNETPP_REPO/.git show omnetpp-{base_version}:configure >configure",
         f"  git --git-dir=$OMNETPP_REPO/.git show omnetpp-{base_version}:configure.in >configure.in",
         f"  git --git-dir=$OMNETPP_REPO/.git diff omnetpp-{base_version}..origin/{git_branch_or_tag_name} --patch > patchfile.diff",
-        f"  git apply --whitespace=nowarn --exclude .gitignore --exclude 'ui/*' --exclude '**/Makefile.vc' patchfile.diff",
+        f"  git apply --whitespace=nowarn --allow-empty --exclude .gitignore --exclude 'ui/*' --exclude '**/Makefile.vc' patchfile.diff",
         'fi',
     ]
 
@@ -309,7 +309,7 @@ def get_all_omnetpp_released_versions():
         "6.0.1", "6.0",
         "5.7", "5.6.2", "5.6.1", "5.6", "5.5.1", "5.5", "5.4.1", "5.4", "5.3", "5.2.1", "5.2", "5.1.1", "5.1", "5.0",
         "4.6", "4.5", "4.4.1", "4.4", "4.3.1", "4.3", "4.2.2", "4.2.1", "4.2", "4.1", "4.0p1", "4.0",
-        "3.3.1"
+        "3.3.2", "3.3.1"
     ]
     return [make_omnetpp_project_description(version) for version in released_versions]
 
@@ -318,7 +318,7 @@ def get_all_omnetpp_patch_branches():
         "6.0.1",
         "5.7", "5.6.2", "5.5.1", "5.4.1", "5.3", "5.2.1", "5.1.1", "5.0",
         "4.6", "4.5", "4.4.1", "4.3.1", "4.2.2", "4.1", "4.0p1",
-        "3.3.1"
+        "3.3.2"
     ]
 
     return [make_omnetpp_project_description(dotx(base_version), base_version) for base_version in base_versions_for_patch_branches]
