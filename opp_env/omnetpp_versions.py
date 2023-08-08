@@ -27,7 +27,7 @@ def make_omnetpp_project_description(version, base_version=None):
     # Patch branches in the repo are in the form "omnetpp-<major>.<minor>.x", and are based off
     # the last patch release of that major/minor release. E.g. "omnetpp-4.2.x" is based off "omnetpp-4.2.2".
     # Those modernized versions require much fewer quirks to set up and compile.
-    modernized_releases = [ "3.3.2" ]  #TODO and new patch releases from the .x branches, and releases after 6.0.1
+    modernized_releases = [ "3.3.2", "4.0.2" ]  #TODO and new patch releases from the .x branches, and releases after 6.0.1
     is_modernized = version.endswith(".x") or version == "master" or version in modernized_releases
 
     # Github automatically makes source archives available under a different URL for tags and branches.
@@ -308,7 +308,7 @@ def get_all_omnetpp_released_versions():
     released_versions = [
         "6.0.1", "6.0",
         "5.7", "5.6.2", "5.6.1", "5.6", "5.5.1", "5.5", "5.4.1", "5.4", "5.3", "5.2.1", "5.2", "5.1.1", "5.1", "5.0",
-        "4.6", "4.5", "4.4.1", "4.4", "4.3.1", "4.3", "4.2.2", "4.2.1", "4.2", "4.1", "4.0p1", "4.0",
+        "4.6", "4.5", "4.4.1", "4.4", "4.3.1", "4.3", "4.2.2", "4.2.1", "4.2", "4.1", "4.0.2", "4.0p1", "4.0",
         "3.3.2", "3.3.1"
     ]
     return [make_omnetpp_project_description(version) for version in released_versions]
