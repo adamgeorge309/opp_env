@@ -629,7 +629,7 @@ def get_project_descriptions():
                 r"""cd quisp && ./quisp$BUILD_MODE_SUFFIX simulations/two_nodes.ini -c two_node_MIM -u Cmdenv --sim-time-limit=100s"""
             ],
             "required_projects": {"omnetpp": ["6.0.0"]},
-            "git_url": "https://github.com/sfc-aqua/quisp.git",
+            "git_url": "https://github.com/sfc-aqu/quisp.git",
             "patch_commands": [
                 r"""git reset --hard eddfe7ee80535a624987941653c59da2ce138929""",    # the releases need git, so we're using a commit of the master branch
             ],
