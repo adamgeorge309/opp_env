@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nox_session: ${{ fromJson(needs.list_nox_test_sessions.outputs.matrix) }}
+        nox_session: ${{ fromJson(needs.create-combinations.outputs.matrix) }}
     runs-on: ubuntu-latest
 
     steps:
