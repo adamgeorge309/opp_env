@@ -44,7 +44,7 @@ jobs:
 
     - name: '"External" smoke test'
       working-directory: tests
-      run: ./project_tester install quisp
+      run: ./project_tester install quisp core4inet
 
     - name: Show output
       if: always()
