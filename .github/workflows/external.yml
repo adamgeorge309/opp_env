@@ -59,12 +59,12 @@ jobs:
         matrix: ${{ steps.set-matrix.outputs.matrix }}
 
   smoketests:
-    name: Smoke tests
     needs: create-combinations
     strategy:
       fail-fast: false
       matrix:
-        nox_session: ${{ fromJson(needs.create-combinations.outputs.matrix) }}
+        projects: ${{ fromJson(needs.create-combinations.outputs.matrix) }}
+    name: Smoke test ${{ matrix.projects }}
     runs-on: ubuntu-latest
 
     steps:
@@ -90,9 +90,9 @@ jobs:
     #   working-directory: tests
     #   run: ./smoketest_list_and_info
 
-    - name: '${{ matrix.nox_session }} smoke test'
+    - name: 'run smoke test'
       working-directory: tests
-      run: ./project_tester --dry-run install "${{ matrix.nox_session }}"
+      run: ./project_tester --dry-run install "${{ matrix.projects }}"
 
     # - name: Show output
     #   if: always()
