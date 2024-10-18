@@ -92,7 +92,7 @@ jobs:
 
     - name: 'run smoke test'
       working-directory: tests
-      run: ./project_tester --dry-run install "${{ matrix.projects }}"
+      run: ./project_tester --dry-run install "${{ matrix.nox_session }}"
 
     # - name: Show output
     #   if: always()
