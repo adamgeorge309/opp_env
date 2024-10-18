@@ -1,8 +1,8 @@
 name: Publish opp_env Python distribution to PyPI
 
 on: 
-  push: 
-    tags: [ '*' ]  # only publish to PyPI on tag push
+  # push: 
+  #   tags: [ '*' ]  # only publish to PyPI on tag push
   workflow_dispatch:
 
 jobs:
