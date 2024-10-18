@@ -52,7 +52,7 @@ jobs:
 
     - name: list all test sessions 2
       id: set-matrix2
-      run: echo "::set-output name=matrix::$(opp_env listx --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
+      run: echo "::set-output name=matrix::$(opp_env list --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
 
     - name: Show output
       if: always()
