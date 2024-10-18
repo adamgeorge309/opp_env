@@ -42,9 +42,13 @@ jobs:
     #   working-directory: tests
     #   run: ./smoketest_install_and_run
 
-    - name: '"External" smoke test'
-      working-directory: tests
-      run: ./project_tester install quisp
+    # - name: '"External" smoke test'
+    #   working-directory: tests
+    #   run: ./project_tester install quisp
+
+    - name: list all test sessions
+      id: set-matrix
+      run: echo "::set-output name=matrix::$(tests/project_tester --dry-run install '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
 
     - name: Show output
       if: always()
