@@ -56,7 +56,7 @@ jobs:
 
       # save the list into the outputs
       outputs:
-        matrix: ${{ steps.set-matrix.outputs.matrix }}
+        matrix: ${{ toJson(steps.set-matrix.outputs.matrix) }}
 
   smoketests:
     needs: create-combinations
