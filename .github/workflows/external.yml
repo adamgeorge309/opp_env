@@ -44,7 +44,7 @@ jobs:
 
     - name: '"External" smoke test'
       working-directory: tests
-      run: ./project-tester install --dry-run quisp
+      run: ./project_tester install --dry-run quisp
 
     - name: Show output
       if: always()
