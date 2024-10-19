@@ -82,6 +82,6 @@ jobs:
         cat tests/logs/${{ matrix.projects }}.out || echo '(no output)'
         echo "::endgroup::"
 
-        echo "::group::Error output"
+        echo "::group::Error"
         cat tests/logs/${{ matrix.projects }}.err || echo '(no output)'
         echo "::endgroup::"
