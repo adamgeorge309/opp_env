@@ -81,7 +81,7 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
 
-    - name: run smoke test
+    - name: Run smoke test
       working-directory: tests
       run: ./project_tester install ${{ matrix.projects }}
 
