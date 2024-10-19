@@ -52,6 +52,8 @@ jobs:
             json_array="[$json_array]"
             echo "::set-output name=matrix::$json_array"
           fi
+      - name: Debug output
+        run: echo "${{ steps.set-matrix.outputs.matrix }}"
 
   smoketests:
     needs: create-combinations
