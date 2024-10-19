@@ -83,7 +83,7 @@ jobs:
 
     - name: run smoke test
       working-directory: tests
-      run: ./project_tester --dry-run install ${{ matrix.projects }}
+      run: ./project_tester install ${{ matrix.projects }}
 
     # - name: display matrix
     #   run: echo ${{ matrix.projects }}
