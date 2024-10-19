@@ -75,13 +75,13 @@ jobs:
       working-directory: tests
       run: ./project_tester install ${{ matrix.projects }}
 
-    # - name: Show output
-    #   if: always()
-    #   run: |
-    #     echo "::group::Output"
-    #     cat tests/out.txt || echo '(no output)'
-    #     echo "::endgroup::"
+    - name: Show output
+      if: always()
+      run: |
+        echo "::group::Output"
+        cat tests/logs/${{ matrix.projects }}.out || echo '(no output)'
+        echo "::endgroup::"
 
-    #     echo "::group::Cumulative output"
-    #     cat tests/cumulative_out.txt || echo '(no output)'
-    #     echo "::endgroup::"
+        echo "::group::Error output"
+        cat tests/logs/${{ matrix.projects }}.err || echo '(no output)'
+        echo "::endgroup::"
