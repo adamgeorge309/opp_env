@@ -30,10 +30,6 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      # - name: list all test sessions
-      #   id: set-matrix1
-      #   run: echo "::set-output name=matrix::$(tests/project_tester --dry-run install '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
-
       - name: list all test sessions
         id: set-matrix
         run: echo "::set-output name=matrix::$(opp_env list --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
@@ -62,21 +58,16 @@ jobs:
     - name: Install locally
       run: python3 -m pip install -e .
 
-    # - name: '"Nixless" smoke test'
-    #   working-directory: tests
-    #   run: ./smoketest_nixless
-
     - uses: cachix/install-nix-action@v30
       with:
         nix_path: nixpkgs=channel:nixos-unstable
 
-    # - name: '"List and info" smoke test'
+    # - name: 'run smoke test'
     #   working-directory: tests
-    #   run: ./smoketest_list_and_info
+    #   run: ./project_tester --dry-run install ${{ matrix.projects }}
 
-    - name: 'run smoke test'
-      working-directory: tests
-      run: ./project_tester --dry-run install ${{ matrix.projects }}
+    - name: display matrix
+      run: echo ${{ matrix.projects }}
 
     # - name: Show output
     #   if: always()
