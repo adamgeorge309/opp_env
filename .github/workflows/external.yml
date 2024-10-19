@@ -44,7 +44,7 @@ jobs:
       fail-fast: false
       matrix:
         projects: ${{ fromJson(needs.create-combinations.outputs.matrix) }}
-    name: Smoke test
+    name: Smoke test # ${{ matrix.projects }}
     runs-on: ubuntu-latest
 
     steps:
