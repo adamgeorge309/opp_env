@@ -54,8 +54,8 @@ jobs:
           fi
       - name: Debug output
         run: echo "${{ steps.set-matrix.outputs.matrix }}"
-      outputs:
-        matrix: ${{ steps.set-matrix.outputs.matrix }}
+      # outputs:
+      #   matrix: ${{ steps.set-matrix.outputs.matrix }}
 
   smoketests:
     needs: create-combinations
