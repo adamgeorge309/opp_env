@@ -30,16 +30,6 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      # - name: list all test sessions
-      #   id: set-matrix
-      #   run: echo "::set-output name=matrix::$(opp_env list --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
-      #   # run: echo "::set-output name=matrix::[$(opp_env list --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))' | jq -R . | jq -s .)]"
-      # - name: Debug output
-      #   run: echo "${{ steps.set-matrix.outputs.matrix }}"
-      # # save the list into the outputs
-      # outputs:
-      #   matrix: ${{ steps.set-matrix.outputs.matrix }}
-
       - name: list all test sessions
         id: set-matrix
         run: |
