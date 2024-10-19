@@ -32,7 +32,8 @@ jobs:
 
       - name: list all test sessions
         id: set-matrix
-        run: echo "::set-output name=matrix::$(opp_env list --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
+        # run: echo "::set-output name=matrix::$(opp_env list --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))')"
+        run: echo "::set-output name=matrix::[$(opp_env list --flat | grep -P '^(?!(omnetpp|inet|simulte|simu5g|veins))' | jq -R . | jq -s .)]"
 
       # save the list into the outputs
       outputs:
@@ -67,7 +68,7 @@ jobs:
     #   run: ./project_tester --dry-run install ${{ matrix.projects }}
 
     - name: display matrix
-      run: echo "${{ matrix.projects }}"
+      run: echo ${{ matrix.projects }}
 
     # - name: Show output
     #   if: always()
