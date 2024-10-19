@@ -54,8 +54,8 @@ jobs:
           fi
       - name: Debug output
         run: echo "${{ steps.set-matrix.outputs.matrix }}"
-      # outputs:
-      #   matrix: ${{ steps.set-matrix.outputs.matrix }}
+      outputs:
+        matrix: ${{ steps.set-matrix.outputs.matrix }}
 
   smoketests:
     needs: create-combinations
@@ -81,12 +81,12 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
 
-    # - name: 'run smoke test'
-    #   working-directory: tests
-    #   run: ./project_tester --dry-run install ${{ matrix.projects }}
+    - name: 'run smoke test'
+      working-directory: tests
+      run: ./project_tester --dry-run install ${{ matrix.projects }}
 
-    - name: display matrix
-      run: echo ${{ matrix.projects }}
+    # - name: display matrix
+    #   run: echo ${{ matrix.projects }}
 
     # - name: Show output
     #   if: always()
