@@ -85,9 +85,6 @@ jobs:
       working-directory: tests
       run: ./project_tester install ${{ matrix.projects }}
 
-    # - name: display matrix
-    #   run: echo ${{ matrix.projects }}
-
     # - name: Show output
     #   if: always()
     #   run: |
