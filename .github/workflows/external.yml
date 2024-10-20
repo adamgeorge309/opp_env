@@ -82,6 +82,9 @@ jobs:
     - name: Set DISPLAY variable
       run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
+    # - name: Run wish command
+    #   run: wish -c "puts OK; exit"
+
     - name: Check for wish
       run: |
         TMPDIR=${TMPDIR:-/tmp}
