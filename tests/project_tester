@@ -39,7 +39,7 @@ def expand_project_filter(project_filter):
     list = sorted(subprocess.check_output(cmd, shell=True, text=True).split())
     # print(list)
     # type(list)
-    # print(" --> ", " ".join(list))
+    print(" --> ", " ".join(list))
     return list
 
 combinations = []
