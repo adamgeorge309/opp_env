@@ -71,6 +71,11 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
 
+    - name: Check for wish
+      run: |
+        opp_env run --install --no-build --init omnetpp-4.0 -c "which wish || echo 'wish not found' && cd omnetpp-4.0.2 && ./configure"
+        which wish || echo "wish not found"
+
     - name: Run test
       working-directory: tests
       run: ./project_tester install ${{ matrix.projects }}
