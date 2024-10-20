@@ -73,7 +73,7 @@ jobs:
 
     - name: Check for wish
       run: |
-        opp_env run --install --no-build --init omnetpp-4.0 -c "which wish || echo 'wish not found' && cd omnetpp-4.0.2 && ./configure"
+        opp_env run --install --no-build omnetpp-4.0 -c "which wish || echo 'wish not found' && cd omnetpp-4.0.2 && ./configure"
         which wish || echo "wish not found"
 
     - name: Run test
