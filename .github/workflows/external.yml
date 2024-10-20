@@ -71,6 +71,20 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
 
+    - name: Install Xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+
+    - name: Start Xvfb
+      run: Xvfb :99 -screen 0 1024x768x24 &
+
+    - name: Set DISPLAY variable
+      run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
+    # - name: Run wish command
+    #   run: wish -c "puts OK; exit"
+
     - name: Check for wish
       run: |
         TMPDIR=${TMPDIR:-/tmp}
