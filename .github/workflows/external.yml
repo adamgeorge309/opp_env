@@ -50,7 +50,7 @@ jobs:
   smoketests:
     needs: create-combinations
     strategy:
-      # fail-fast: false
+      fail-fast: false
       matrix:
         projects: ${{ fromJson(needs.create-combinations.outputs.matrix) }}
     name: Smoke test ${{ matrix.projects }}
