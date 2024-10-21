@@ -648,7 +648,7 @@ def get_project_descriptions():
             "smoke_test_commands": [
                 r"""if [ "$BUILD_MODE" = "release" ]; then BUILD_MODE_SUFFIX="_release"; CELL_BIN=$(echo $CELL_ROOT/src/out/*-release/cell); fi""",
                 r"""if [ "$BUILD_MODE" = "debug" ]; then BUILD_MODE_SUFFIX=""; CELL_BIN=$(echo $CELL_ROOT/src/out/*-debug/cell); fi""",
-                r"""cd src""",
+                r"""cd srcx""",
                 r"""$CELL_BIN -u Cmdenv -c demo-emission -n .. ../networks/demo.ini""",
             ],
             "required_projects": {"omnetpp": ["4.0.*"]},
