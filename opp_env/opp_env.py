@@ -1297,10 +1297,11 @@ class Workspace:
                 function {function_name} ()
                 {{
                     modes="$*"
-                    if [ -z "$modes" ]; then modes="$BUILD_MODES"; fi
-                    if [ -z "$modes" ]; then modes="release debug"; fi
+                    modes=''${{modes:-$BUILD_MODES}}
+                    modes=''${{modes:-release debug}}
 
                     (
+                        # note: "set -e" and "if" dont mix! see https://mywiki.wooledge.org/BashFAQ/105
                         set -eo pipefail;
                         for mode in $modes; do
                             echo -e "{SHELL_GREEN}Invoking {function_name} $mode:{SHELL_NOCOLOR}"
