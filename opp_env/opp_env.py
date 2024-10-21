@@ -1296,33 +1296,28 @@ class Workspace:
             return f"""
                 function {function_name} ()
                 {{
-                    # Collect build modes from args and $BUILD_MODES; if there is one, build it;
-                    # if there are several, recursively call this this function for each.
-                    local modes="$*"
-                    if [ -z "$modes" ]; then modes="$BUILD_MODES"; fi
-                    if [ -z "$modes" ]; then modes="release debug"; fi
-                    local mode_count=$(echo "$modes" | wc -w)
-                    if [ "$mode_count" -gt 1 ]; then
-                        echo -e "{SHELL_GREEN}Invoking {function_name} with modes: $modes{SHELL_NOCOLOR}";
-                        for i in $modes; do
-                            {function_name} $i || return 1
+                    modes="$*"
+                    modes=''${{modes:-$BUILD_MODES}}
+                    modes=''${{modes:-release debug}}
+
+                    (
+                        # note: "set -e" and "if" dont mix! see https://mywiki.wooledge.org/BashFAQ/105
+                        set -eo pipefail;
+                        for mode in $modes; do
+                            echo -e "{SHELL_GREEN}Invoking {function_name} $mode:{SHELL_NOCOLOR}"
+                            cd {directory_var}
+                            BUILD_MODE=$mode
+                            true ============== Project-specific commands: ==============
+                            {build_commands}
+                            true ========================================================
                         done
-                        return 0
-                    fi
-                    local mode=$modes
-                    echo -e "{SHELL_GREEN}Invoking {function_name} $mode:{SHELL_NOCOLOR}"
-                    if (
-                        set -eo pipefail
-                        cd {directory_var}
-                        BUILD_MODE=$mode
-                        true ============== Project-specific commands: ==============
-                        {build_commands}
-                        true ========================================================
-                    ); then
+                    )
+
+                    if [ "$?" == "0" ]; then
                         echo -e "{SHELL_GREEN}Done {function_name} $mode{SHELL_NOCOLOR}"
                     else
                         echo -e "{SHELL_RED}ERROR in {function_name} $mode{SHELL_NOCOLOR}";
-                        return 1;
+                        return 1
                     fi
                 }}
                 export -f {function_name}
@@ -1908,10 +1903,10 @@ def run_subcommand_main(projects, command=None, workspace_directory=None, chdir=
     commands = []
     if build or (install and not install_without_build):
         commands = ["build_all"]
-        if run_test:
-            commands.append("test_all")
-        if run_smoke_test:
-            commands.append("smoke_test_all")
+    if run_test:
+        commands.append("test_all")
+    if run_smoke_test:
+        commands.append("smoke_test_all")
     if command:
         commands.append(command)
 
@@ -1919,7 +1914,7 @@ def run_subcommand_main(projects, command=None, workspace_directory=None, chdir=
     working_directory = workspace_directory if chdir else None
     extra_nix_packages = list(set(workspace.extra_nix_packages + (extra_nix_packages or [])))
     extra_nix_packages_str = f" with extra packages: {cyan(' '.join(extra_nix_packages))}" if extra_nix_packages else ""
-    _logger.info(f"Running {'test ' if run_test else 'smoke_test ' if run_smoke_test else ''}command for projects {cyan(str(effective_project_descriptions))} in workspace {cyan(workspace.root_directory)} in {cyan(kind)} mode{extra_nix_packages_str}")
+    _logger.info(f"Running command for projects {cyan(str(effective_project_descriptions))} in workspace {cyan(workspace.root_directory)} in {cyan(kind)} mode{extra_nix_packages_str}")
     workspace.run_commands_with_projects(effective_project_descriptions, working_directory=working_directory, commands=commands, isolated=isolated, extra_nix_packages=extra_nix_packages, vars_to_keep=vars_to_keep, build_modes=build_modes)
 
 def maint_subcommand_main(catalog_dir, **kwargs):
