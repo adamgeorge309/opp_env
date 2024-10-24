@@ -136,8 +136,8 @@ jobs:
       run: python3 -m pip install -e .
 
     - uses: cachix/install-nix-action@v30
-      with:
-        nix_path: nixpkgs=channel:nixos-unstable
+      # with:
+      #   nix_path: nixpkgs=channel:nixos-unstable
 
     - name: Install Xvfb
       run: |
