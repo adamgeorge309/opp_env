@@ -119,3 +119,71 @@ jobs:
         echo "::group::Error"
         cat tests/logs/${{ matrix.projects }}.err || echo '(no output)'
         echo "::endgroup::"
+
+  omnetpp61:
+    name: Smoke test omnetpp
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+    - name: Install locally
+      run: python3 -m pip install -e .
+
+    - uses: cachix/install-nix-action@v30
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+
+    - name: Install Xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+
+    - name: Start Xvfb
+      run: Xvfb :99 -screen 0 1024x768x24 &
+
+    - name: Set DISPLAY variable
+      run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
+    # - name: Check for wish
+    #   run: |
+    #     TMPDIR=${TMPDIR:-/tmp}
+    #     WORKSPACE=$(mktemp -d $TMPDIR/opp_env_test_XXXXXX)
+    #     opp_env run --install --no-build omnetpp-4.0 -w $WORKSPACE --init -c "which wish || echo 'wish not found'"
+    #     echo $DISPLAY
+
+    - name: Run test
+      working-directory: tests
+      run: ./project_tester --workspace /tmp/omnetpp install omnetpp-6.1.0
+
+    - name: ldd
+      if: always()
+      working-directory: /tmp/omnetpp
+      run: |
+        cd omnetpp-6.1.0/samples/dyna
+        ldd dyna
+
+    - name: makefile.inc config.log
+      if: always()
+      working-directory: /tmp/omnetpp
+      run: |
+        cd omnetpp-6.1.0
+        cat Makefile.inc
+        echo '------------------------------'
+        cat config.log
+
+    - name: Show output
+      if: always()
+      run: |
+        echo "::group::Output"
+        cat tests/logs/omnetpp.out || echo '(no output)'
+        echo "::endgroup::"
+
+        echo "::group::Error"
+        cat tests/logs/omnetpp.err || echo '(no output)'
+        echo "::endgroup::"
