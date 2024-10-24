@@ -100,6 +100,15 @@ jobs:
         cd omnetpp-6.1.0/samples/dyna
         ldd dyna
 
+    - name: makefile.inc config.log
+      if: always()
+      working-directory: /tmp/${{ matrix.projects }}
+      run: |
+        cd omnetpp-6.1.0
+        cat Makefile.inc
+        echo '------------------------------'
+        cat config.log
+
     - name: Show output
       if: always()
       run: |
