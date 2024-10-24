@@ -91,10 +91,10 @@ jobs:
 
     - name: Run test
       working-directory: tests
-      run: ./project_tester --workspace ${{ matrix.projects }} install ${{ matrix.projects }}
+      run: ./project_tester --workspace /tmp/${{ matrix.projects }} install ${{ matrix.projects }}
 
     - name: ldd
-      working-directory: tests/${{ matrix.projects }}
+      working-directory: /tmp/${{ matrix.projects }}
       run: |
         cd omnetpp-6.1.0/samples/dyna
         ldd dyna
