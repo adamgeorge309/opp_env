@@ -91,7 +91,7 @@ jobs:
 
     - name: Run test
       working-directory: tests
-      run: ./project_tester -w ${{ matrix.projects }} install ${{ matrix.projects }}
+      run: ./project_tester --workspace ${{ matrix.projects }} install ${{ matrix.projects }}
 
     - name: ldd
       working-directory: tests/${{ matrix.projects }}
