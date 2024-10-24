@@ -181,9 +181,9 @@ jobs:
       if: always()
       run: |
         echo "::group::Output"
-        cat tests/logs/omnetpp.out || echo '(no output)'
+        cat tests/logs/omnetpp-6.1.0.out || echo '(no output)'
         echo "::endgroup::"
 
         echo "::group::Error"
-        cat tests/logs/omnetpp.err || echo '(no output)'
+        cat tests/logs/omnetpp-6.1.0.err || echo '(no output)'
         echo "::endgroup::"
