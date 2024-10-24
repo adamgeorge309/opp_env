@@ -159,7 +159,7 @@ jobs:
 
     - name: Run test
       working-directory: tests
-      run: ./project_tester --workspace /tmp/omnetpp install omnetpp-6.1.0
+      run: ./project_tester --workspace /tmp/omnetpp install omnetpp-6.1.0 --build-modes debug
 
     - name: ldd
       if: always()
