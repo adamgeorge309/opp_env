@@ -37,8 +37,12 @@ smoke_test = True
 # Produce list of test cases
 def expand_project_filter(project_filter):
     cmd = f"opp_env list --flat | grep -P '{project_filter}'"
+    list = subprocess.check_output(cmd, shell=True, text=True)
+    if list_only:
+        print(list)
+        sys.exit(0)
     print(cmd, end="")
-    list = sorted(subprocess.check_output(cmd, shell=True, text=True).split())
+    list = sorted(list.split())
     print(" --> ", " ".join(list))
     return list
 
@@ -51,10 +55,6 @@ if project_filters:
     if len(combinations) > 100 and not really:
         print(f"Too many combinations ({len(combinations)}), exiting, specify --really to force it", file=sys.stderr)
         sys.exit(1)
-
-if list_only:
-    print(combinations)
-    sys.exit(0)
 
 testcases_from_file = []
 
