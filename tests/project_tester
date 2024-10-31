@@ -10,6 +10,7 @@ import tempfile
 parser = argparse.ArgumentParser(description="Run tests for a project.")
 parser.add_argument("--workspace", help="Path to the workspace to use for the test. Default is a temporary directory.")
 parser.add_argument("--dry-run", default=False, action='store_true', help="Do not actually run the test program")
+parser.add_argument("--list-only", default=False, action="store_true", help="Only list filtered projects (for use with CI testing)")
 parser.add_argument("--really", default=False, action='store_true', help="Do not be deterred if the number of test cases is too high")
 parser.add_argument("--build-modes", action='append', metavar='debug,release,...', help="Build mode(s)")
 parser.add_argument("--precmd", help="Command to run before each test case. Not affected by --dry-run.")
@@ -27,6 +28,7 @@ args = parser.parse_args()
 command = args.command
 project_filters = args.project_filters
 dry_run = args.dry_run
+list_only = args.list_only
 really = args.really
 build_modes = ",".join(args.build_modes) if args.build_modes else ""
 workspace = args.workspace
@@ -49,6 +51,10 @@ if project_filters:
     if len(combinations) > 100 and not really:
         print(f"Too many combinations ({len(combinations)}), exiting, specify --really to force it", file=sys.stderr)
         sys.exit(1)
+
+if list_only:
+    print(combinations)
+    sys.exit(0)
 
 testcases_from_file = []
 
