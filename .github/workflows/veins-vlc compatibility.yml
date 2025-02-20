@@ -26,7 +26,7 @@ jobs:
       - name: list all test sessions
         id: set-matrix
         run: |
-          projects=$(opp_env list --expand veins_vlc-latest)
+          projects=$(opp_env list --expand-all veins_vlc-1.0.20210526)
           if [ -z "$projects" ]; then
             echo "::set-output name=matrix::[]"
           else
