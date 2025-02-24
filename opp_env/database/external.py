@@ -1834,6 +1834,7 @@ def get_project_descriptions():
             "metadata": {
                 "catalog_url": "https://omnetpp.org/download-items/Veins-VLC.html",
             },
+            "nix_packages": ["python2"],
             "required_projects": {"omnetpp": ["6.*", "5.7.*", "5.6.*", "5.5.*", "5.4.*", "5.3.*"], "inet": ["4.2.8", "4.2.5", "4.2.4", "4.2.3", "4.2.2", "4.2.1", "4.2.0", "4.1.1", "4.1.0", "3.8.1", "3.7.1", "3.7.0", "3.6.5"], "veins": ["5.*"]},
             "details": "Veins VLC extends Veins vehicular network simulation framework with channel models for Vehicular Visible Light Communication (V-VLC).",
             "smoke_test_commands": [
