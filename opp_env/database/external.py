@@ -2271,35 +2271,6 @@ def get_project_descriptions():
             "clean_commands": [r"""[ ! -f src/Makefile ] || make clean MODE=$BUILD_MODE"""],
         },
 
-        # {
-        #     # NOTE - doesn't work with sumo-gui
-        #     # FXGLVisual::create: requested OpenGL visual unavailable. -> this comes from sumo
-        #     # when sumo is closed -> Aborted (core dumped) -> eliminated by mesa package sometimes?; now FATAL: exception not rethrown
-        #     # -> openGL issue is POSTPONED
-        #     # TODO: build subprojects
-        #     "name": "plexe", "version": "3.1.2",
-        #     "nix_packages": ["python2", "libxml2"],
-        #     "required_projects": {"omnetpp": ["6.1.*", "6.0.*", "5.7.*"], "veins": ["5.2"]},
-        #     "description": "Plexe is a Veins extension for the realistic simulation of platooning (i.e., automated car-following) systems",
-        #     "download_url": "https://github.com/michele-segata/plexe/archive/refs/tags/plexe-3.1.2.tar.gz",
-        #     "smoke_test_commands": [
-        #         r"""if [ "$BUILD_MODE" = "debug" ]; then BUILD_MODE_ARG="-d"; fi""",
-        #         r"""if [ "$BUILD_MODE" = "release" ]; then BUILD_MODE_ARG=""; fi""",
-        #         r"""cd examples/platooning""",
-        #         r"""plexe_run $BUILD_MODE_ARG -u Cmdenv -c PlatooningNoGui -r 0 --sim-time-limit=10s""",
-        #     ],
-        #     "setenv_commands": [
-        #                         r"""export SUMO_HOME=${pkgs.sumo}/share/sumo && echo 'sumo home: ' && echo $SUMO_HOME""",
-        #                         r"""source setenv""",
-        #                         r"""echo 'Hint: use the `plexe_run` command in an example simulation folder to run the example simulation.'""",
-        #     ],
-        #     "patch_commands": [
-        #         r"""sed -i 's|from elementtree|from xml.etree|' */*/*/*.py""",
-        #     ],
-        #     "build_commands": [r"""./configure --with-veins=$VEINS_ROOT && make -j$NIX_BUILD_CORES MODE=$BUILD_MODE"""],
-        #     "clean_commands": [r"""make clean MODE=$BUILD_MODE"""],
-        # },
-
         {
             # NOTE - this should be its own project; should this be linked to inet?
             "name": "rimfading_allinone", "version": "20171123",    # latest master as of time of writing
